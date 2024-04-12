@@ -2,13 +2,15 @@ import { FC, memo } from "react";
 import { ProductInfoProps } from ".";
 import { Star } from "./star";
 import { formartNumber } from "@/common/helper";
+import { AddToCart } from "./add-to-cart";
+import { ProductDescription } from "./product-description";
 
 export type ProductDetailProps = Omit<ProductInfoProps, 'imageUrl'>
 
 const ProductDetailComponent: FC<ProductDetailProps> = (props) => {
     const { title, price, postedAt, status, brand, category, unit } = props;
 
-    return <div className="flex flex-col items-start justify-center gap-1">
+    return <div className="w-[60%] flex flex-col items-start justify-center gap-1">
         <span className="text-2xl font-bold">{title}</span>
         <div className="flex items-center justify-start gap-2">
             <div className="flex items-center justify-center gap-1">
@@ -30,6 +32,9 @@ const ProductDetailComponent: FC<ProductDetailProps> = (props) => {
             <span className="text-base font-light">Brand: <span>{brand}</span></span>
             <span className="text-base font-light">Category: <span>{category}</span></span>
         </div>
+
+        <AddToCart />
+        <ProductDescription />
     </div>
 }
 
