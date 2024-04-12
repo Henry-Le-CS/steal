@@ -17,7 +17,9 @@ const ClientNavbarComponent: FC<IClientNavbarProps> = (props) => {
     const isActive = (routePath: string) => routePath === path;
 
     return (
-        <div className="sticky bg-white top-0 px-[15%] flex items-center justify-between p-2">
+        <div style={{
+            zIndex: 20,
+        }} className="sticky bg-white top-0 px-[15%] flex items-center justify-between p-2">
             {logo}
             <div className="flex h-full items-center justify-between space-x-4">
                 {routes.map((route) => (
