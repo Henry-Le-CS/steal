@@ -14,8 +14,7 @@ const ProductListComponent: FC = () => {
     const [rows, setRows] = useState(9);
 
     const { productState, productDispatch } = useProductContext()
-    const { products, search, order, currentPage, unit, total } = productState
-
+    const { products, search, order, currentPage, unit, total, categories, range } = productState
 
     useEffect(() => {
         // Fetch data from server
@@ -43,7 +42,7 @@ const ProductListComponent: FC = () => {
 
         fetchData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search, order, currentPage])
+    }, [search, order, currentPage, categories, range])
 
     const formatDate = (date: string) => {
         const d = new Date(date)
@@ -58,8 +57,6 @@ const ProductListComponent: FC = () => {
     }) => {
         setFirst(event.first);
         setRows(event.rows);
-
-        console.log(event)
 
         productDispatch({ type: 'SET_PAGE', payload: event.page });
     };

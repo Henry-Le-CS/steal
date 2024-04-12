@@ -1,5 +1,5 @@
 'use client'
-import { memo, useEffect, useState } from "react"
+import { FC, memo, useEffect, useState } from "react"
 import { MultiSelect } from 'primereact/multiselect';
 import { BaseOptionType } from "@/common/types";
 import { useProductContext } from "@/store/contexts";
@@ -30,10 +30,14 @@ const itemCategories: ItemCategoryType[] = [
     }
 ];
 
-const CategoryFilterComponent = () => {
+const CategoryFilterComponent: FC<{
+    categories: string[];
+    setCategories: (categories: string[]) => void;
+}> = (props) => {
+    const { categories, setCategories } = props
+
     const [options, setOptions] = useState<ItemCategoryType[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { productState, productDispatch } = useProductContext()
 
     useEffect(() => {
         async function fetchCategories() {
@@ -72,13 +76,8 @@ const CategoryFilterComponent = () => {
             <MultiSelect
                 loading={isLoading}
                 itemClassName=" border border-b-1 text-[black]"
-                value={productState.categories}
-                onChange={(e) => {
-                    productDispatch({
-                        type: ProductActionEnum.SET_CATEGORY,
-                        payload: e.value
-                    })
-                }}
+                value={categories}
+                onChange={(e) => setCategories(e.value)}
                 options={options}
                 optionLabel="name"
                 display="chip"

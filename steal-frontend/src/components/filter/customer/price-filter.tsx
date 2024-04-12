@@ -3,11 +3,14 @@ import { FC, memo, useState } from "react";
 import * as Slider from '@radix-ui/react-slider';
 import { ProductActionEnum } from "@/store/reducers/useProductReducer";
 import { formartNumber, getPriceRange } from "@/common/helper";
+import { PriceUnit } from "@/common/constants/products";
 
-const PriceFilterComponent: FC = () => {
-    const { productState, productDispatch } = useProductContext();
-
-    const { range, unit } = productState;
+const PriceFilterComponent: FC<{
+    range: [number, number];
+    unit: PriceUnit;
+    setRange: (range: [number, number]) => void;
+}> = (props) => {
+    const { range, unit, setRange } = props;
     const displayedRange = getPriceRange(unit, range);
 
     return <div className="flex flex-col gap-2 items-start justify-center">
@@ -19,12 +22,7 @@ const PriceFilterComponent: FC = () => {
             className="w-[200px] relative flex items-center select-none touch-none h-5"
             defaultValue={range}
             step={1}
-            onValueChange={(value) => {
-                productDispatch({
-                    type: ProductActionEnum.SET_RANGE,
-                    payload: value
-                })
-            }}
+            onValueChange={setRange}
             minStepsBetweenThumbs={1}
         >
             <Slider.Track className="bg-blackA7 relative grow rounded-full h-[3px]">
