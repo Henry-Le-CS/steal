@@ -1,15 +1,23 @@
+'use client'
 import { FC, HtmlHTMLAttributes, memo } from "react";
 import { PriceFilter } from "./price-filter";
 import { CategoryFilter } from "./categories-filter";
 import { Button } from 'primereact/button';
 import clsx from "clsx";
+import { useProductContext } from "@/store/contexts";
 
 interface CustomerFilterProps extends HtmlHTMLAttributes<HTMLDivElement> { }
 const CustomerFilterComponent: FC<CustomerFilterProps> = (props) => {
     const { className, ...rest } = props;
 
+    const { productDispatch } = useProductContext();
+
     const onClick = async () => {
-        // TODO: apply filter and load products. Reset at page 1
+        // Reset at page 0
+        productDispatch({
+            type: 'SET_PAGE',
+            payload: 0
+        })
     }
 
     return <div className={

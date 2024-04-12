@@ -20,7 +20,7 @@ const initialProductState: ProductStateType = {
     pageSize: 9,
     range: [0, 100],
     unit: PriceUnit.VND,
-    order: 'none',
+    order: '',
     total: 0,
 }
 

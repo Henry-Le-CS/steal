@@ -9,7 +9,7 @@ export type ProductBriefType = {
     postedAt: string;
 };
 
-export type OrderByPriceType = 'none' | 'asc' | 'desc' | 'newest' | 'oldest';
+export type OrderByPriceType = 'none' | 'asc' | 'desc' | 'newest' | 'oldest' | '';
 
 export type ProductStateType = {
     products: ProductBriefType[];
