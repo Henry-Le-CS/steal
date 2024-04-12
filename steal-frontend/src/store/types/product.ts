@@ -5,6 +5,8 @@ export type ProductBriefType = {
     imageUrl: string;
     title: string;
     price: number;
+    count: number;
+    postedAt: string;
 };
 
 export type OrderByPriceType = 'none' | 'asc' | 'desc' | 'newest' | 'oldest';
