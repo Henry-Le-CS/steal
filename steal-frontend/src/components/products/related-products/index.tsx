@@ -4,7 +4,7 @@ import Image from "next/image";
 import { RelatedProductList } from "./related-products";
 
 const RelatedProductsComponent = () => {
-    return <div className="w-full flex flex-col items-center my-[80px] px-[20%] justify-center gap-4">
+    return <div className="w-full flex flex-col items-center mb-[80px] px-[20%] justify-center gap-4">
         <Image className="h-[60px]" src={RelatedProductTitle} alt="Title" />
         <RelatedProductList />
     </div>

@@ -61,7 +61,7 @@ const ProductInfoComponent: FC = () => {
 
     const { imageUrl, ...rest } = product;
 
-    return <div className="w-full flex items-start my-[80px] px-[15%] justify-center gap-4">
+    return <div className="w-full flex items-start mt-[80px] mb-[60px] px-[15%] justify-center gap-4">
         <Image className="w-[30%] border rounded-lg" width='auto' height="auto" alt="Card" src="https://primefaces.org/cdn/primereact/images/usercard.png" />
         <ProductDetail
             {...rest}
