@@ -12,3 +12,5 @@ export const getPriceRange = (unit: PriceUnit, range: number[]) => {
 
     return [basePrice[0]*range[0]/100, basePrice[1]*range[1]/100];
 }
+
+export const formartNumber = (number: number) => new Intl.NumberFormat('vi-VN').format(number)

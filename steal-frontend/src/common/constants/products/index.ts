@@ -1,3 +1,3 @@
 export enum PriceUnit {
-    VND = 'VND'
+    VND = 'VNĐ'
 }

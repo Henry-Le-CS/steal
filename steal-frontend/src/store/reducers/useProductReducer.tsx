@@ -8,6 +8,7 @@ export enum ProductActionEnum {
     SET_SEARCH = 'SET_SEARCH',
     SET_PAGE = 'SET_PAGE',
     SET_ORDER = 'SET_ORDER',
+    SET_PRODUCTS = 'SET_PRODUCTS',
 }
 
 const initialProductState: ProductStateType = {
@@ -51,6 +52,11 @@ export const productReducer = (state: ProductStateType, action: ProductActionTyp
             return {
                 ...state,
                 order: payload
+            }
+        case ProductActionEnum.SET_PRODUCTS:
+            return {
+                ...state,
+                products: payload
             }
         default:
             return state

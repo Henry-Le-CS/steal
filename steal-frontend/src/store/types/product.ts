@@ -1,6 +1,7 @@
 import { PriceUnit } from "@/common/constants/products";
 
 export type ProductBriefType = {
+    id: string;
     imageUrl: string;
     title: string;
     price: number;

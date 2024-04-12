@@ -2,7 +2,7 @@ import { useProductContext } from "@/store/contexts/ProductProvider";
 import { FC, memo, useState } from "react";
 import * as Slider from '@radix-ui/react-slider';
 import { ProductActionEnum } from "@/store/reducers/useProductReducer";
-import { getPriceRange } from "@/common/helper";
+import { formartNumber, getPriceRange } from "@/common/helper";
 
 const PriceFilterComponent: FC = () => {
     const { productState, productDispatch } = useProductContext();
@@ -42,7 +42,7 @@ const PriceFilterComponent: FC = () => {
 
         <div className="flex items-center text-[#707070] justify-center gap-2 text-sm">
             <span className="text-[#707070]">Price: </span>
-            <span className="font-bold">{displayedRange[0]} - {displayedRange[1]}</span>
+            <span className="font-bold">{formartNumber(displayedRange[0])} - {formartNumber(displayedRange[1])}</span>
             <span>{unit}</span>
         </div>
     </div >
