@@ -19,7 +19,7 @@ const ClientNavbarComponent: FC<IClientNavbarProps> = (props) => {
     return (
         <div style={{
             zIndex: 20,
-        }} className="sticky bg-white top-0 px-[15%] flex items-center justify-between p-2">
+        }} className="sticky bg-white shadow-sm top-0 px-[15%] flex items-center justify-between p-2">
             {logo}
             <div className="flex h-full items-center justify-between space-x-4">
                 {routes.map((route) => (

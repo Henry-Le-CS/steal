@@ -15,7 +15,7 @@ interface MainLayoutProps {
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
     return (
         <ProductProvider>
-            <div className="flex flex-col w-full h-[100vh] bg-white">
+            <div className="relative flex flex-col w-full h-[100%] bg-white">
                 <ClientNavbar
                     logo={<ClientLogo className="h-[80px] py-2" />}
                     routes={CUSTOMER_ROUTES}
