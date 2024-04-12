@@ -49,7 +49,6 @@ const CategoryFilterComponent = () => {
                     }
                 })
 
-                console.log(cities)
                 setOptions(categories)
             }
             catch (err) {
@@ -72,7 +71,7 @@ const CategoryFilterComponent = () => {
         <div className="card w-[250px] border border-1-[#d3d3d3] rounded-lg">
             <MultiSelect
                 loading={isLoading}
-                itemClassName="hover:bg-[#90EE90] border border-b-1 text-[black]"
+                itemClassName=" border border-b-1 text-[black]"
                 value={productState.categories}
                 onChange={(e) => {
                     productDispatch({

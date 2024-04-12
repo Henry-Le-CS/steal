@@ -6,7 +6,7 @@ export type ProductBriefType = {
     price: number;
 };
 
-export type OrderByPriceType = 'asc' | 'desc';
+export type OrderByPriceType = 'none' | 'asc' | 'desc' | 'newest' | 'oldest';
 
 export type ProductStateType = {
     products: ProductBriefType[];
@@ -16,6 +16,7 @@ export type ProductStateType = {
     pageSize: number;
     range: [number, number];
     unit: PriceUnit;
+    order: OrderByPriceType;
 }
 
 export type ProductActionType = {
