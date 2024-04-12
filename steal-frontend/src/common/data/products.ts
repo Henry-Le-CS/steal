@@ -65,4 +65,12 @@ export const MOCK_PRODUCTS: ProductBriefType[] = [
         count: 1,
         postedAt: '2021-09-01T00:00:00.000Z'
     },
+    {
+        id: '9',
+        imageUrl: 'https://primefaces.org/cdn/primereact/images/usercard.png',
+        title: 'Canon Kiss X5 (Canon EOS 600D) + Lens 28-80mm (80% New)',
+        price: 15000000,
+        count: 1,
+        postedAt: '2021-09-01T00:00:00.000Z'
+    },
 ]

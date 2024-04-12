@@ -20,6 +20,7 @@ export type ProductStateType = {
     range: [number, number];
     unit: PriceUnit;
     order: OrderByPriceType;
+    total: number;
 }
 
 export type ProductActionType = {

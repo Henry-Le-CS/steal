@@ -9,6 +9,7 @@ export enum ProductActionEnum {
     SET_PAGE = 'SET_PAGE',
     SET_ORDER = 'SET_ORDER',
     SET_PRODUCTS = 'SET_PRODUCTS',
+    SET_ALL = 'SET_ALL',
 }
 
 const initialProductState: ProductStateType = {
@@ -20,6 +21,7 @@ const initialProductState: ProductStateType = {
     range: [0, 100],
     unit: PriceUnit.VND,
     order: 'none',
+    total: 0,
 }
 
 export const productReducer = (state: ProductStateType, action: ProductActionType) => {
@@ -39,7 +41,8 @@ export const productReducer = (state: ProductStateType, action: ProductActionTyp
         case ProductActionEnum.SET_SEARCH:
             return {
                 ...state,
-                search: payload
+                search: payload,
+                currentPage: 0
             }
 
         case ProductActionEnum.SET_PAGE:
@@ -51,12 +54,19 @@ export const productReducer = (state: ProductStateType, action: ProductActionTyp
         case ProductActionEnum.SET_ORDER:
             return {
                 ...state,
-                order: payload
+                order: payload,
+                currentPage: 0
             }
         case ProductActionEnum.SET_PRODUCTS:
             return {
                 ...state,
-                products: payload
+                products: payload.products,
+                total: payload.total ?? state.total
+            }
+        case ProductActionEnum.SET_ALL:
+            return {
+                ...state,
+                ...payload
             }
         default:
             return state

@@ -6,11 +6,16 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { MOCK_PRODUCTS } from "@/common/data";
 import { formartNumber } from "@/common/helper";
 import Link from "next/link";
+import { Paginator } from 'primereact/paginator';
 
 const ProductListComponent: FC = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(9);
+
     const { productState, productDispatch } = useProductContext()
-    const { products, search, order, currentPage, range, categories, unit } = productState
+    const { products, search, order, currentPage, unit, total } = productState
+
 
     useEffect(() => {
         // Fetch data from server
@@ -18,7 +23,15 @@ const ProductListComponent: FC = () => {
             try {
                 setIsLoading(true)
                 await new Promise((resolve) => setTimeout(resolve, 500))
-                productDispatch({ type: 'SET_PRODUCTS', payload: MOCK_PRODUCTS })
+                productDispatch(
+                    {
+                        type: 'SET_PRODUCTS',
+                        payload: {
+                            products: MOCK_PRODUCTS,
+                            total: MOCK_PRODUCTS.length * 2
+                        }
+                    }
+                )
             }
             catch (err) {
                 console.error(err)
@@ -29,12 +42,27 @@ const ProductListComponent: FC = () => {
         }
 
         fetchData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, order, currentPage])
 
     const formatDate = (date: string) => {
         const d = new Date(date)
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
+
+    const onPageChange = (event: {
+        first: number;
+        rows: number;
+        page: number;
+        pageCount: number;
+    }) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        console.log(event)
+
+        productDispatch({ type: 'SET_PAGE', payload: event.page });
+    };
 
     if (isLoading || !products?.length) return <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="#036147" animationDuration=".5s" />
 
@@ -73,8 +101,13 @@ const ProductListComponent: FC = () => {
                 })
             }
         </div>
-        <div>
-            {/* Pagination */}
+        <div className="card">
+            <Paginator
+                first={first}
+                rows={rows}
+                totalRecords={total}
+                onPageChange={onPageChange}
+            />
         </div>
     </div>
 }
