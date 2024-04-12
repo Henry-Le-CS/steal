@@ -1,10 +1,13 @@
 'use client'
+import { formatDate } from "@/common/helper";
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "primereact/button";
 import { FC, memo, useState } from "react";
 
 // TODO: check if in cart => update cart
 const AddToCartComponent: FC = () => {
     const [count, setCount] = useState(0);
+    const { toast } = useToast()
 
     function increase() {
         setCount(prev => prev + 1);
@@ -17,6 +20,10 @@ const AddToCartComponent: FC = () => {
 
     function addToCart() {
         // id, count
+        toast({
+            title: "Product is added to cart",
+            description: `Added at ${formatDate(new Date().toISOString())}`,
+        })
     }
 
 
@@ -26,7 +33,12 @@ const AddToCartComponent: FC = () => {
             <Button className="hover:opacity-70 py-2 px-4 ring-0 text-black">{count}</Button>
             <Button className="hover:opacity-70 py-2 px-4 ring-0 text-black border-x" onClick={increase}>+</Button>
         </div>
-        <Button className="w-[30%] flex items-center justify-center hover:opacity-70 py-2 px-4 ring-0 text-black border">Add to cart</Button>
+        <Button
+            onClick={addToCart}
+            className="w-[30%] flex items-center justify-center hover:opacity-70 py-2 px-4 ring-0 text-black border"
+        >
+            Add to cart
+        </Button>
     </div>
 }
 
