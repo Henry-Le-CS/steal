@@ -25,6 +25,7 @@ export const updateCart = (id: string, count: number) => {
 
     cart[id] = count;
 
+    window.dispatchEvent(new Event('storage'))
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -44,5 +45,6 @@ export const updateMultipleCart = (items: Record<string, number>) => {
         }
     }
 
+    window.dispatchEvent(new Event('storage'))
     localStorage.setItem("cart", JSON.stringify(cart));
 }
