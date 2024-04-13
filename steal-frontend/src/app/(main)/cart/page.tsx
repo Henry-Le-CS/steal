@@ -10,23 +10,27 @@ export default function CartPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const { toast } = useToast();
 
+    async function fetchCartItem() {
+        const cart = getItemsFromCart();
+
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        const cartItems = MOCK_PRODUCTS.filter(product => cart[product.id]);
+
+        const items = cartItems
+            // Get from localStorage
+            .map(item => ({
+                ...item,
+                cartQuantity: cart[item.id]
+            }
+            ))
+            // Filter out items with cartQuantity <= 0
+            .filter(item => item.cartQuantity > 0)
+
+        setCartItems(items);
+    }
+
     useEffect(() => {
-        async function fetchCartItem() {
-            const cart = getItemsFromCart();
-
-            await new Promise((resolve) => setTimeout(resolve, 200));
-
-            const cartItems = MOCK_PRODUCTS.filter(product => cart[product.id]);
-
-            const items = cartItems.map(item => {
-                return {
-                    ...item,
-                    cartQuantity: cart[item.id]
-                }
-            })
-
-            setCartItems(items);
-        }
 
         fetchCartItem();
     }, [])
@@ -43,6 +47,8 @@ export default function CartPage() {
             title: 'Cart is updated',
             description: `Cart is updated at ${new Date().toISOString()}`
         })
+
+        fetchCartItem();
     }
 
     // const cartItems = Object.keys(cart).map(key => )

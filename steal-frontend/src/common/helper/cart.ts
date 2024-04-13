@@ -19,6 +19,10 @@ export const updateCart = (id: string, count: number) => {
     const storedData = localStorage.getItem("cart") || "{}";
     const cart = JSON.parse(storedData) as Record<string, number>;
 
+    if(count == 0 && cart[id]) {
+        delete cart[id];
+    }
+
     cart[id] = count;
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -32,7 +36,12 @@ export const updateMultipleCart = (items: Record<string, number>) => {
     const cart = JSON.parse(storedData) as Record<string, number>;
 
     for (const [id, count] of Object.entries(items)) {
-        cart[id] = count;
+        if(count == 0 && cart[id]) {
+            delete cart[id];
+        }
+        else {
+            cart[id] = count;
+        }
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
