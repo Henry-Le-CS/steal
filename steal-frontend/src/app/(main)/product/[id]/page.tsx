@@ -1,6 +1,5 @@
 import { ProductInfo } from "@/components/products/details";
 import { RelatedProducts } from "@/components/products/related-products";
-import { useParams } from "next/navigation";
 
 export default function ProductDetailPage() {
     return (

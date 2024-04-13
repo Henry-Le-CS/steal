@@ -1,15 +1,20 @@
 'use client'
 import { formatDate } from "@/common/helper";
-import { getItemFromCart, updateCart } from "@/common/helper/cart";
+import { getItemsFromCart, updateCart } from "@/common/helper/cart";
 import { useToast } from "@/components/ui/use-toast";
 import { useParams } from "next/navigation";
 import { Button } from "primereact/button";
 import { FC, memo, useState } from "react";
 
-// TODO: check if in cart => update cart
-const AddToCartComponent: FC = () => {
-    const { id } = useParams();
-    const currentItemCount = getItemFromCart()[id as string];
+
+const AddToCartComponent: FC<{
+    id?: string
+}> = (props) => {
+    let { id } = useParams();
+
+    if (props.id) id = props.id;
+
+    const currentItemCount = getItemsFromCart()[id as string];
 
     const [count, setCount] = useState(currentItemCount || 0);
     const { toast } = useToast()
