@@ -1,5 +1,5 @@
 import { CartItem } from "@/store/types/cart";
-import { FC, memo } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { CartProductListInfo } from "./product-info";
 import { Button } from "primereact/button";
 import Link from "next/link";
@@ -14,18 +14,6 @@ interface ProductListProps {
 
 const ProductListComponent: FC<ProductListProps> = (props) => {
     const { items, setCartItems } = props;
-
-    const shouldUpdate = () => {
-        if (!localStorage) return false;
-        const cartItems = getItemsFromCart();
-
-        const mappedItems = items.reduce((acc, item) => {
-            acc[item.id] = item.cartQuantity;
-            return acc;
-        }, {} as Record<string, number>);
-
-        return _.isEqual(cartItems, mappedItems);
-    }
 
     return <div className="w-[50%] flex flex-col items-center justify-center gap-4">
         <div className="w-full grid grid-cols-7 gap-2 border-b font-bold">
@@ -48,7 +36,7 @@ const ProductListComponent: FC<ProductListProps> = (props) => {
             <Link href="/product">
                 <Button className="bg-white shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-[#036147]" label="Continue Shopping" />
             </Link>
-            <Button disabled={shouldUpdate()} className="bg-[#009D65] shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-white" label="Update Cart" onClick={props.onUpdateCart} />
+            <Button className="bg-[#009D65] shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-white" label="Update Cart" onClick={props.onUpdateCart} />
         </div>
     </div>
 }
