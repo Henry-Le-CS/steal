@@ -2,6 +2,7 @@
 import { MOCK_PRODUCTS } from "@/common/data";
 import { getItemsFromCart, updateCart, updateMultipleCart } from "@/common/helper/cart"
 import { CartProductList } from "@/components/cart/product-list";
+import { ProceedCheckout } from "@/components/transaction/proceed-checkout";
 import { useToast } from "@/components/ui/use-toast";
 import { CartItem } from "@/store/types/cart";
 import { useEffect, useState } from "react";
@@ -54,6 +55,6 @@ export default function CartPage() {
     // const cartItems = Object.keys(cart).map(key => )
     return <div className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[80px]">
         <CartProductList items={cartItems} setCartItems={setCartItems} onUpdateCart={onUpdateCart} />
-        <CartProductList items={cartItems} setCartItems={setCartItems} onUpdateCart={onUpdateCart} />
+        <ProceedCheckout items={cartItems} />
     </div>
 }
