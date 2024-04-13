@@ -6,10 +6,11 @@ import { memo } from "react";
 
 interface ProceedCheckoutProps {
     items: CartItem[];
+    onProceedCheckout: () => void;
 }
 
 export const ProceedCheckout = memo(function ProceedCheckoutComponent(props: ProceedCheckoutProps) {
-    const { items } = props;
+    const { items, onProceedCheckout } = props;
 
     const plural = items.length > 1 ? 's' : '';
 
@@ -54,7 +55,7 @@ export const ProceedCheckout = memo(function ProceedCheckoutComponent(props: Pro
         </div>
 
         <div className="w-full flex items-center justify-center">
-            <Button className="w-[40%] border border-[#000] text-white shadow-none bg-[#FF7125] rounded-lg px-6 py-2" label="Proceed to checkout" />
+            <Button onClick={onProceedCheckout} className="w-[40%] border border-[#000] text-white shadow-none bg-[#FF7125] rounded-lg px-6 py-2" label="Proceed to checkout" />
         </div>
     </div>
 })

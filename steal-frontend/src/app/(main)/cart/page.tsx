@@ -6,9 +6,12 @@ import { ProceedCheckout } from "@/components/transaction/proceed-checkout";
 import { useToast } from "@/components/ui/use-toast";
 import { CartItem } from "@/store/types/cart";
 import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui"
+
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [tab, setTab] = useState<'cart' | 'checkout'>('cart');
     const { toast } = useToast();
 
     async function fetchCartItem() {
@@ -52,9 +55,33 @@ export default function CartPage() {
         fetchCartItem();
     }
 
-    // const cartItems = Object.keys(cart).map(key => )
+    function onProceedCheckout() {
+        setTab('checkout');
+    }
+
+
     return <div className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[80px]">
-        <CartProductList items={cartItems} setCartItems={setCartItems} onUpdateCart={onUpdateCart} />
-        <ProceedCheckout items={cartItems} />
+        <Tabs defaultValue={tab} value={tab} className="w-full p-2">
+            <TabsList onChange={(e) => console.log(e)} className="w-full text-[red] py-6 px-2">
+                <TabsTrigger className="w-[50%]" onClick={() => setTab('cart')} value="cart">
+                    <span className="font-bold text-[#036147]">Shopping Cart</span>
+                </TabsTrigger>
+                <TabsTrigger className="w-[50%]" onClick={() => setTab('checkout')} value="checkout">
+                    <span className="font-bold text-[#036147]">Checkout</span>
+                </TabsTrigger>
+            </TabsList>
+            <TabsContent className="text-sm" value="checkout">
+                Items are straight from the album and do not have noticeable flaws  unless stated otherwise. However, if you are extremely sensitive to fine  scratches/production marks, if any, then please refrain from  purchasing!
+                <br />
+                <br />
+                Availability will be adjusted as more arrive.
+                <br />
+                <br />
+                📮  FREE SHIPPING is provided through Pitney Bowes and fulfilled by USPS  with limited tracking. If you would like USPS tracking please upgrade at  checkout.</TabsContent>
+            <TabsContent className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[80px] " value="cart">
+                <CartProductList items={cartItems} setCartItems={setCartItems} onUpdateCart={onUpdateCart} />
+                <ProceedCheckout items={cartItems} onProceedCheckout={onProceedCheckout} />
+            </TabsContent>
+        </Tabs>
     </div>
 }

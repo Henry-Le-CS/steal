@@ -14,7 +14,7 @@ interface ProductListProps {
 const ProductListInfoComponent: FC<ProductListProps> = (props) => {
     const { items, setCartItems } = props;
 
-    return <div className="w-full flex flex-col items-start justify-center gap-4 mt-4">
+    return <div className="w-full flex flex-col items-start justify-start gap-4 mt-4 max-h-[600px] overflow-y-auto no-scrollbar">
         {
             items.map((item, index) => {
                 const { id, title, imageUrl, price, cartQuantity } = item;
