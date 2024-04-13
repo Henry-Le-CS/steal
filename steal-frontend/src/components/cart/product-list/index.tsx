@@ -32,12 +32,22 @@ const ProductListComponent: FC<ProductListProps> = (props) => {
         </div>
 
         <CartProductListInfo items={items} setCartItems={setCartItems} />
-        <div className="grid grid-cols-2 gap-4 mt-2 font-light">
-            <Link href="/product">
-                <Button className="bg-white shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-[#036147]" label="Continue Shopping" />
-            </Link>
-            {items?.length && <Button className="bg-[#009D65] shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-white" label="Update Cart" onClick={props.onUpdateCart} />}
-        </div>
+
+        {
+            items?.length ?
+                <div className="grid grid-cols-2 gap-4 mt-2 font-light">
+                    <Link href="/product">
+                        <Button className="bg-white shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-[#036147]" label="Continue Shopping" />
+                    </Link>
+                    {items?.length ? <Button className="bg-[#009D65] shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-white" label="Update Cart" onClick={props.onUpdateCart} /> : <></>}
+                </div> :
+                <div className="grid grid-cols-1 gap-4 mt-2 font-light">
+                    <Link href="/product">
+                        <Button className="bg-white col-span-1 shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-[#036147]" label="Continue Shopping" />
+                    </Link>
+                </div>
+        }
+
     </div>
 }
 
