@@ -36,7 +36,7 @@ const ProductListComponent: FC<ProductListProps> = (props) => {
             <Link href="/product">
                 <Button className="bg-white shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-[#036147]" label="Continue Shopping" />
             </Link>
-            <Button className="bg-[#009D65] shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-white" label="Update Cart" onClick={props.onUpdateCart} />
+            {items?.length && <Button className="bg-[#009D65] shadow-none hover:opacity-70 border border-1 border-[#036147] px-8 py-2 text-white" label="Update Cart" onClick={props.onUpdateCart} />}
         </div>
     </div>
 }
