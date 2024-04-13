@@ -1,13 +1,21 @@
 'use client'
 import { formatDate } from "@/common/helper";
+import { getItemFromCart, updateCart } from "@/common/helper/cart";
 import { useToast } from "@/components/ui/use-toast";
+import { useParams } from "next/navigation";
 import { Button } from "primereact/button";
 import { FC, memo, useState } from "react";
 
 // TODO: check if in cart => update cart
 const AddToCartComponent: FC = () => {
-    const [count, setCount] = useState(0);
+    const { id } = useParams();
+    const currentItemCount = getItemFromCart()[id as string];
+
+    const [count, setCount] = useState(currentItemCount || 0);
     const { toast } = useToast()
+
+
+    const shouldUpdate = currentItemCount !== count;
 
     function increase() {
         setCount(prev => prev + 1);
@@ -18,13 +26,20 @@ const AddToCartComponent: FC = () => {
         setCount(prev => prev - 1);
     }
 
-    function addToCart() {
-        // id, count
+    function updateCartInfo() {
+        updateCart(id as string, count);
+
+        const multiple = count > 1 ? "s" : "";
+
+        const title = shouldUpdate || currentItemCount == 0 ? "Cart is updated" : "Product is added to cart";
+        const message = shouldUpdate ? `${count} item${multiple} are updated at ${formatDate(new Date().toISOString())}` : `${count} item${multiple} are added at ${formatDate(new Date().toISOString())}`;
+
         toast({
-            title: "Product is added to cart",
-            description: `Added at ${formatDate(new Date().toISOString())}`,
+            title,
+            description: message,
         })
     }
+
 
 
     return <div className="w-full flex items-center justify-between gap-4 my-8">
@@ -34,10 +49,10 @@ const AddToCartComponent: FC = () => {
             <Button className="hover:opacity-70 py-2 px-4 ring-0 text-black border-x" onClick={increase}>+</Button>
         </div>
         <Button
-            onClick={addToCart}
+            onClick={updateCartInfo}
             className="w-[30%] flex items-center justify-center hover:opacity-70 py-2 px-4 ring-0 text-black border"
         >
-            Add to cart
+            {shouldUpdate || !(currentItemCount == 0) ? "Update Cart" : "Add to Cart"}
         </Button>
     </div>
 }
