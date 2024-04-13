@@ -7,10 +7,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { CartItem } from "@/store/types/cart";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui"
+import { CheckoutForm } from "@/components/cart/checkout";
 
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [savedCartItems, setSavedCartItems] = useState<CartItem[]>([]);
+
     const [tab, setTab] = useState<'cart' | 'checkout'>('cart');
     const { toast } = useToast();
 
@@ -32,10 +35,10 @@ export default function CartPage() {
             .filter(item => item.cartQuantity > 0)
 
         setCartItems(items);
+        setSavedCartItems(items);
     }
 
     useEffect(() => {
-
         fetchCartItem();
     }, [])
 
@@ -60,9 +63,9 @@ export default function CartPage() {
     }
 
 
-    return <div className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[80px]">
-        <Tabs defaultValue={tab} value={tab} className="w-full p-2">
-            <TabsList onChange={(e) => console.log(e)} className="w-full text-[red] py-6 px-2">
+    return <div className="flex mt-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[5%]">
+        <Tabs defaultValue={tab} value={tab} className="w-full p-2 mx-[32px]">
+            <TabsList onChange={(e) => console.log(e)} className="w-full text-[red] py-6 px-25">
                 <TabsTrigger className="w-[50%]" onClick={() => setTab('cart')} value="cart">
                     <span className="font-bold text-[#036147]">Shopping Cart</span>
                 </TabsTrigger>
@@ -70,15 +73,10 @@ export default function CartPage() {
                     <span className="font-bold text-[#036147]">Checkout</span>
                 </TabsTrigger>
             </TabsList>
-            <TabsContent className="text-sm" value="checkout">
-                Items are straight from the album and do not have noticeable flaws  unless stated otherwise. However, if you are extremely sensitive to fine  scratches/production marks, if any, then please refrain from  purchasing!
-                <br />
-                <br />
-                Availability will be adjusted as more arrive.
-                <br />
-                <br />
-                📮  FREE SHIPPING is provided through Pitney Bowes and fulfilled by USPS  with limited tracking. If you would like USPS tracking please upgrade at  checkout.</TabsContent>
-            <TabsContent className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[80px] " value="cart">
+            <TabsContent value="checkout">
+                <CheckoutForm items={savedCartItems} />
+            </TabsContent>
+            <TabsContent className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 p-2" value="cart">
                 <CartProductList items={cartItems} setCartItems={setCartItems} onUpdateCart={onUpdateCart} />
                 <ProceedCheckout items={cartItems} onProceedCheckout={onProceedCheckout} />
             </TabsContent>
