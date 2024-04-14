@@ -13,6 +13,7 @@ import { CheckoutForm } from "@/components/cart/checkout";
 export default function CartPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [savedCartItems, setSavedCartItems] = useState<CartItem[]>([]);
+    const [selectedItem, setSelectedItem] = useState<string>('');
 
     const [tab, setTab] = useState<'cart' | 'checkout'>('cart');
     const { toast } = useToast();
@@ -21,7 +22,6 @@ export default function CartPage() {
         const cart = getItemsFromCart();
 
         await new Promise((resolve) => setTimeout(resolve, 200));
-
         const cartItems = MOCK_PRODUCTS.filter(product => cart[product.id]);
 
         const items = cartItems
@@ -36,6 +36,10 @@ export default function CartPage() {
 
         setCartItems(items);
         setSavedCartItems(items);
+
+        if (!selectedItem && items.length > 0) {
+            setSelectedItem(items[0].id);
+        }
     }
 
     useEffect(() => {
@@ -62,10 +66,11 @@ export default function CartPage() {
         setTab('checkout');
     }
 
+    const checkoutedItem = savedCartItems.find(item => item.id === selectedItem);
 
     return <div className="flex mt-[48px] h-max items-start justify-center w-full bg-white gap-12 px-[5%]">
         <Tabs defaultValue={tab} value={tab} className="w-full p-2 mx-[32px]">
-            <TabsList onChange={(e) => console.log(e)} className="w-full text-[red] py-6 px-25">
+            <TabsList onChange={(e) => console.log(e)} className="w-full text-[red] pt-6 py-2 px-25">
                 <TabsTrigger className="w-[50%]" onClick={() => setTab('cart')} value="cart">
                     <span className="font-bold text-[#036147]">Shopping Cart</span>
                 </TabsTrigger>
@@ -73,12 +78,23 @@ export default function CartPage() {
                     <span className="font-bold text-[#036147]">Checkout</span>
                 </TabsTrigger>
             </TabsList>
-            <TabsContent value="checkout">
-                <CheckoutForm items={savedCartItems} />
-            </TabsContent>
             <TabsContent className="flex my-[48px] h-max items-start justify-center w-full bg-white gap-12 p-2" value="cart">
-                <CartProductList items={cartItems} setCartItems={setCartItems} onUpdateCart={onUpdateCart} />
-                <ProceedCheckout items={cartItems} onProceedCheckout={onProceedCheckout} />
+                <CartProductList
+                    selectedItemId={selectedItem}
+                    items={cartItems}
+                    setCartItems={setCartItems}
+                    onUpdateCart={onUpdateCart}
+                    setSelectedItem={setSelectedItem}
+                />
+                <ProceedCheckout
+                    item={checkoutedItem}
+                    onProceedCheckout={onProceedCheckout}
+                />
+            </TabsContent>
+            <TabsContent className="-mt-16 mb-12" value="checkout">
+                <CheckoutForm
+                    items={checkoutedItem ? [checkoutedItem] : []}
+                />
             </TabsContent>
         </Tabs>
     </div>

@@ -10,11 +10,12 @@ interface CheckoutFormProps {
 
 export const CheckoutForm = memo(function CheckoutFormComponent(props: CheckoutFormProps) {
     const { items } = props;
+
     function onSubmit() {
 
     }
 
-    return <Form.Root className="w-full grid grid-cols-6 gap-12 mt-8 p-2">
+    return <Form.Root className="w-full grid grid-cols-6 gap-12 p-2">
         <div className="col-span-3 flex flex-col gap-6 items-start justify-center">
             <span className="text-2xl font-light">CHECKOUT INFORMATION</span>
             <CheckoutInformation />

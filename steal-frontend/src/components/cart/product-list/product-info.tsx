@@ -8,17 +8,28 @@ import clsx from "clsx";
 import { UpdateCart } from "./update-cart";
 interface ProductListProps {
     items: CartItem[];
+    selectedItemId: string;
     setCartItems: (items: CartItem[]) => void;
+    setSelectedItem: (id: string) => void;
 }
 
 const ProductListInfoComponent: FC<ProductListProps> = (props) => {
-    const { items, setCartItems } = props;
+    const { items, setCartItems, setSelectedItem } = props;
 
     return <div className="w-full flex flex-col items-start justify-start gap-4 mt-4 max-h-[600px] overflow-y-auto no-scrollbar">
         {
             items.map((item, index) => {
                 const { id, title, imageUrl, price, cartQuantity } = item;
-                return <div key={id} className="w-full flex items-center justify-center gap-2">
+                return <div
+                    key={id}
+                    onClick={() => setSelectedItem(id)}
+                    className={
+                        clsx([
+                            "w-full p-1 flex items-center justify-center gap-2 hover:bg-[#d3d3d3] hover:bg-opacity-40 rounded-lg hover:cursor-pointer",
+                            id === props.selectedItemId && "bg-[#d3d3d3] bg-opacity-40"
+                        ])
+                    }
+                >
                     <div className={
                         clsx([
                             "w-full grid grid-cols-7 gap-2 text-sm p-2",

@@ -8,12 +8,14 @@ const _ = require('lodash');
 
 interface ProductListProps {
     items: CartItem[];
+    selectedItemId: string;
     setCartItems: (items: CartItem[]) => void;
+    setSelectedItem: (id: string) => void;
     onUpdateCart: () => void;
 }
 
 const ProductListComponent: FC<ProductListProps> = (props) => {
-    const { items, setCartItems } = props;
+    const { items, selectedItemId, setCartItems, setSelectedItem } = props;
 
     return <div className="w-[50%] flex flex-col items-center justify-center gap-4">
         <div className="w-full grid grid-cols-7 gap-2 border-b font-bold">
@@ -31,7 +33,7 @@ const ProductListComponent: FC<ProductListProps> = (props) => {
             </div>
         </div>
 
-        <CartProductListInfo items={items} setCartItems={setCartItems} />
+        <CartProductListInfo selectedItemId={selectedItemId} setSelectedItem={setSelectedItem} items={items} setCartItems={setCartItems} />
 
         {
             items?.length ?
