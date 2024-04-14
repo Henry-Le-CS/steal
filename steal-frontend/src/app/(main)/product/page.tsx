@@ -23,8 +23,8 @@ export default function ProductPage() {
 
     return (
         <div className="flex my-[48px] h-max items-start justify-center w-full bg-white">
-            <CustomerFilter className="w-[30%] p-2" />
-            <div className="w-[60%] mt-[12px] flex flex-col items-center justify-center gap-8">
+            <CustomerFilter className="w-[20%] p-2" />
+            <div className="w-[60%] mt-[12px] flex flex-col items-center justify-start gap-8">
                 <CustomerSearch
                     order={productState.order}
                     onOrderChange={onOrderChange}
