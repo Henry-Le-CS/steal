@@ -29,7 +29,7 @@ const LoginPage = () => {
                                     placeholder="USERNAME"
                                     className={
                                         clsx([
-                                            "p-2 bg-inherit w-full text-white shadow-none outline-none",
+                                            "p-2 bg-inherit w-full text-white shadow-none outline-none placeholder:text-white",
                                             bgColor
                                         ])
                                     }
@@ -50,7 +50,7 @@ const LoginPage = () => {
                             <Form.Control asChild>
                                 <input
                                     placeholder="PASSWORD"
-                                    className="p-2 bg-inherit w-full text-white shadow-none outline-none"
+                                    className="p-2 bg-inherit w-full text-white shadow-none outline-none placeholder:text-white"
                                     type="password"
                                     required
                                 />
