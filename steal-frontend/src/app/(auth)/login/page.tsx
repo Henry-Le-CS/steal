@@ -21,7 +21,7 @@ const LoginPage = () => {
                 <Form.Root onSubmit={() => {
                     window.alert('login')
                 }} className="w-[320px] flex flex-col items-center justify-center gap-8">
-                    <Form.Field className="w-full" name="email">
+                    <Form.Field className="w-full" name="username">
                         <div className="relative flex p-2 text-white items-center justify-start gap-1 border border-[white] rounded-sm">
                             <CiUser size={32} />
                             <Form.Control asChild>
@@ -33,17 +33,12 @@ const LoginPage = () => {
                                             bgColor
                                         ])
                                     }
-                                    type="email"
                                     required
                                 />
                             </Form.Control>
 
                             <Form.Message className="absolute -top-[24px] right-0 text-sm text-white opacity-[0.8]" match="valueMissing">
                                 Please enter your username
-                            </Form.Message>
-
-                            <Form.Message className="absolute -top-[24px] right-0 text-sm text-white opacity-[0.8]" match="typeMismatch">
-                                Please provide a valid email
                             </Form.Message>
                         </div>
 
