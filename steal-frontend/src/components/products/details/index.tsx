@@ -12,6 +12,7 @@ export type ProductInfoProps = Omit<ProductBriefType & {
     brand: string;
     category: string;
     unit: PriceUnit;
+    remaining: number;
     // Hard coded information
     // description: string;
     // additionalInfo: string;
@@ -42,6 +43,7 @@ const ProductInfoComponent: FC = () => {
                     brand: 'Cannon',
                     category: 'Electronics',
                     unit: PriceUnit.VND,
+                    remaining: 5,
                 })
             }
             catch (err) {

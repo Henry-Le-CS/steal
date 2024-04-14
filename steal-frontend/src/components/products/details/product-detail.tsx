@@ -8,7 +8,7 @@ import { ProductDescription } from "./product-description";
 export type ProductDetailProps = Omit<ProductInfoProps, 'imageUrl'>
 
 const ProductDetailComponent: FC<ProductDetailProps> = (props) => {
-    const { title, price, postedAt, status, brand, category, unit } = props;
+    const { title, price, postedAt, status, brand, category, unit, remaining } = props;
 
     return <div className="w-[60%] flex flex-col items-start justify-center gap-1">
         <span className="text-2xl font-bold">{title}</span>
@@ -28,7 +28,8 @@ const ProductDetailComponent: FC<ProductDetailProps> = (props) => {
                 <span className="font-bold text-[#FF7125]">{formartNumber(price)}</span>
                 <span className="font-bold">{unit}</span>
             </span>
-            <span className="text-base font-light">Status: <span className="font-bold">{status}</span></span>
+            <span className="text-base font-light">Status: <span>{status}</span></span>
+            <span className="text-base font-light">Remaining: <span>{remaining}</span></span>
             <span className="text-base font-light">Brand: <span>{brand}</span></span>
             <span className="text-base font-light">Category: <span>{category}</span></span>
         </div>
