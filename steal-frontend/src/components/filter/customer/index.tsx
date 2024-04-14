@@ -32,7 +32,7 @@ const CustomerFilterComponent: FC<CustomerFilterProps> = (props) => {
 
     return <div className={
         clsx([
-            "flex flex-col gap-8 items-center justify-center",
+            "flex flex-col gap-8 items-start justify-center",
             className
         ])
     } {...rest}>

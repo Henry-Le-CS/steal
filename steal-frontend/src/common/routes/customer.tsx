@@ -1,7 +1,7 @@
 "use client";
 import { CartIcon } from "@/components/cart/icon";
 import { RouteType } from "../types";
-import { CiShop, CiHome } from "react-icons/ci";
+import { CiShop, CiHome, CiDeliveryTruck } from "react-icons/ci";
 
 export const CUSTOMER_ROUTES: RouteType[] = [
     {
@@ -13,6 +13,11 @@ export const CUSTOMER_ROUTES: RouteType[] = [
         path: "/product",
         icon: () => <CiShop size="32px" />,
         title: "Products"
+    },
+    {
+        path: "/my-order",
+        icon: () => <CiDeliveryTruck size="32px" />,
+        title: "My Order"
     },
     {
         path: "/cart",
