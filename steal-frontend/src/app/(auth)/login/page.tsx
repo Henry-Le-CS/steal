@@ -35,9 +35,10 @@ const LoginPage = () => {
                 return;
             }
 
-            console.log(data.username);
+            cookie.set('username', data.username, {
+                expires: 3400
+            });
 
-            cookie.set('username', data.username);
             router.push('/home')
 
             setError(null);
