@@ -24,7 +24,6 @@ export default function CartPage() {
         const cart = getItemsFromCart();
 
         const ids = Object.keys(cart);
-        console.log('ids', ids);
         const { data } = await getProductByIds(ids.map(id => parseInt(id)));
 
         if (!data) return;
@@ -50,7 +49,8 @@ export default function CartPage() {
 
     useEffect(() => {
         fetchCartItem();
-    }, [])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tab])
 
     function onUpdateCart() {
         const updatedItems = cartItems.reduce((acc, item) => {
@@ -99,6 +99,7 @@ export default function CartPage() {
             </TabsContent>
             <TabsContent className="-mt-16 mb-12" value="checkout">
                 <CheckoutForm
+                    setTab={setTab}
                     items={checkoutedItem ? [checkoutedItem] : []}
                 />
             </TabsContent>

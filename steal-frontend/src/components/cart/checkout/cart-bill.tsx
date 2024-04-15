@@ -7,13 +7,15 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 
 interface CartBillProps {
     items: CartItem[];
+    isLoading: boolean;
+    onSubmit: (e: any) => void;
 }
 
 const CartBillComponent: FC<CartBillProps> = (props) => {
-    const { items } = props;
+    const { items, onSubmit, isLoading } = props;
 
-    if (!items.length) return <div className="w-full border border-[#000] border-[1px] rounded-sm p-4 flex flex-col gap-6 items-center justify-center">
-        <div className="w-full text-2xl w-full flex items-center justify-start">
+    if (!items.length) return <div className="w-full border-[#000] border-[1px] rounded-sm p-4 flex flex-col gap-6 items-center justify-center">
+        <div className="w-full text-2xl flex items-center justify-start">
             <span>YOUR CART</span>
         </div>
 
@@ -36,9 +38,8 @@ const CartBillComponent: FC<CartBillProps> = (props) => {
 
     const total = items.reduce((acc, item) => acc + item.price * item.cartQuantity, 0);
 
-    // TODO: call backend to calculate the price;
-    return <div className="w-full border border-[#000] border-[1px] rounded-sm p-4 flex flex-col gap-6 items-center justify-center">
-        <div className="w-full text-2xl w-full flex items-center justify-start">
+    return <div className="w-full border-[#000] border-[1px] rounded-sm p-4 flex flex-col gap-6 items-center justify-center">
+        <div className="w-full text-2xl flex items-center justify-start">
             <span>YOUR CART</span>
         </div>
 
@@ -89,7 +90,7 @@ const CartBillComponent: FC<CartBillProps> = (props) => {
         </div>
 
         <div className="w-full flex items-center justify-center">
-            <Button className="w-[40%] border border-[#000] text-white shadow-none bg-[#FF7125] rounded-lg px-6 py-2" label="Order" />
+            <Button loading={isLoading} onClick={onSubmit} className="w-[40%] border border-[#000] text-white shadow-none bg-[#FF7125] rounded-lg px-6 py-2" label="Order" />
         </div>
     </div>
 }

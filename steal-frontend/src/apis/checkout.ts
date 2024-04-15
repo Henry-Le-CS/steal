@@ -22,3 +22,22 @@ export const calculatePriceForCartItems = async (payload: GetMultiplePriceDto): 
 
     return data
 }
+
+export type MakeOrderDto = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    city: string;
+    address: string;
+    phone: string;
+    email: string;
+    note: string;
+    paymentType: 'cod';
+    productId: number;
+    quantity: number;
+}
+export const makeOrder = async (payload: MakeOrderDto) => {
+    const {data} = await axiosInstance.post('/order', payload)
+
+    return data
+}

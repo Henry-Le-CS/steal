@@ -22,8 +22,6 @@ const SignUpPage = () => {
                     console.log(e);
                     e.preventDefault();
                     const data = Object.fromEntries(new FormData(e.currentTarget));
-
-                    console.log(data)
                     window.alert('sign up')
                 }} className="w-[320px] flex flex-col items-center justify-center gap-8">
                     <Form.Field className="w-full" name="username">

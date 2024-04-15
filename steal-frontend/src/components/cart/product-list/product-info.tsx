@@ -17,7 +17,7 @@ interface ProductListProps {
 const ProductListInfoComponent: FC<ProductListProps> = (props) => {
     const { items, setCartItems, setSelectedItem } = props;
     const [itemInfo, setItemInfo] = useState<Record<string, any>>({})
-    console.log('items', items, itemInfo);
+
     useEffect(() => {
         async function calculatePrice() {
             const { data: products } = await calculatePriceForCartItems({
