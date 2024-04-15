@@ -1,7 +1,7 @@
-import { Body, Controller, Inject, Logger } from '@nestjs/common';
+import { Body, Controller, Inject, Logger, Param } from '@nestjs/common';
 import { ORDER_SERVICES } from './order.provider';
 import { OrderService } from './services/order.service';
-import { CustomPost } from 'src/common/decorators';
+import { CustomGet, CustomPost } from 'src/common/decorators';
 import { PriceService } from '../check-out/services/price.service';
 import { PRICE_SERVICES } from '../check-out/checkout-provider';
 import { OrderDto } from './types';
@@ -55,6 +55,31 @@ export class OrderController {
           productId,
           amount,
         },
+      };
+    } catch (err) {
+      this.logger.error(err);
+
+      return {
+        message: err.message,
+      };
+    }
+  }
+
+  @CustomGet({
+    description: 'Get all orders',
+    isPublic: true,
+    path: '/:userId',
+  })
+  async getOrders(@Param('userId') userId: string) {
+    try {
+      if (!Number(userId)) {
+        throw new Error('User id must be a number');
+      }
+
+      const orders = await this.orderService.getOrdersByUserId(Number(userId));
+
+      return {
+        data: orders,
       };
     } catch (err) {
       this.logger.error(err);

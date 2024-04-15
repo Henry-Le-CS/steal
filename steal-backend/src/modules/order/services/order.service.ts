@@ -29,7 +29,7 @@ export class OrderService {
     return order;
   }
 
-  async executeOrderTransaction(payload: OrderPayloadDto) {
+  private async executeOrderTransaction(payload: OrderPayloadDto) {
     const { productId, quantity } = payload;
 
     try {
@@ -68,7 +68,7 @@ export class OrderService {
     }
   }
 
-  async createOrder(tx: PrismaClient, payload: OrderPayloadDto) {
+  private async createOrder(tx: PrismaClient, payload: OrderPayloadDto) {
     const {
       id,
       address,
@@ -102,5 +102,13 @@ export class OrderService {
     });
 
     return order;
+  }
+
+  async getOrdersByUserId(userId: number) {
+    const orders = this.dbService.orders.findMany({
+      where: { user_id: userId },
+    });
+
+    return orders;
   }
 }
