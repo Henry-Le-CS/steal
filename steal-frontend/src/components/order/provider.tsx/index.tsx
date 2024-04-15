@@ -9,6 +9,7 @@ import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
 import { OrderedItem } from "../customer/ordered-item";
 import { ProviderOrderTab } from "./ordered-item";
+import { AddItemForm } from "./add-item";
 const TABS = [
     {
         title: "My Products",
@@ -108,12 +109,16 @@ export const ProviderOrder = function ProviderOrderComponent() {
             }
         </TabsContent>
 
-        <TabsContent className="flex mt-[24px] flex-col w-full h-max items-start justify-center bg-white gap-2 p-2" value="order">
+        <TabsContent className="flex flex-col w-full h-max items-start justify-center bg-white gap-2 p-2" value="order">
             <Search value={text} />
             <ProviderOrderTab
                 isLoading={isLoading}
                 userId={`${cookie.get('id')}`}
             />
+        </TabsContent>
+
+        <TabsContent className="-mt-[32px] flex flex-col w-full h-max items-center justify-center bg-white gap-2 p-2 border" value="add-product">
+            <AddItemForm />
         </TabsContent>
     </Tabs >
 
