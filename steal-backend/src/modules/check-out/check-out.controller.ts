@@ -3,7 +3,9 @@ import { CustomPost } from 'src/common/decorators';
 import { PRICE_SERVICES } from './checkout-provider';
 import { GetPricePayloadType } from './types';
 import { PriceService } from './services/price.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Check Out')
 @Controller('check-out')
 export class CheckOutController {
   private readonly logger = new Logger(CheckOutController.name);

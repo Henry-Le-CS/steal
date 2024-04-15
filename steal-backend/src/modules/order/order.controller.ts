@@ -5,7 +5,9 @@ import { CustomGet, CustomPost } from 'src/common/decorators';
 import { PriceService } from '../check-out/services/price.service';
 import { PRICE_SERVICES } from '../check-out/checkout-provider';
 import { OrderDto } from './types';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Order')
 @Controller('order')
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
