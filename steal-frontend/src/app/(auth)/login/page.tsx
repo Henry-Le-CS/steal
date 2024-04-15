@@ -19,24 +19,29 @@ const LoginPage = () => {
                 <Form.Root onSubmit={() => {
                     window.alert('login')
                 }} className="w-[320px] flex flex-col items-center justify-center gap-8">
-                    <Form.Field className="w-full" name="username">
+                    <Form.Field className="w-full" name="email">
                         <div className="relative flex p-2 text-white items-center justify-start gap-1 border border-[white] rounded-sm">
                             <CiUser size={32} />
                             <Form.Control asChild>
                                 <input
-                                    placeholder="USERNAME"
+                                    placeholder="EMAIL"
                                     className={
                                         clsx([
                                             "p-2 bg-inherit w-full text-white shadow-none outline-none placeholder:text-white",
                                             `bg-[#036147]`
                                         ])
                                     }
+                                    type="email"
                                     required
                                 />
                             </Form.Control>
 
                             <Form.Message className="absolute -top-[24px] right-0 text-sm text-white opacity-[0.8]" match="valueMissing">
-                                Please enter your username
+                                Please enter your email
+                            </Form.Message>
+
+                            <Form.Message className="absolute -top-[24px] right-0 text-sm text-white opacity-[0.8]" match="typeMismatch">
+                                Please enter a valid email
                             </Form.Message>
                         </div>
 
