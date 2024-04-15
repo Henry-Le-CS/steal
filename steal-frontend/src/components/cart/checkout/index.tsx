@@ -10,6 +10,7 @@ import { CiUser } from "react-icons/ci";
 import { MakeOrderDto, makeOrder } from "@/apis";
 import { removeItemWithIdFromCart } from "@/common/helper";
 import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
 
 interface CheckoutFormProps {
     items: CartItem[];
@@ -20,6 +21,7 @@ export const CheckoutForm = memo(function CheckoutFormComponent(props: CheckoutF
     const { items, setTab } = props;
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const cookie = useCookies();
 
     function onSubmit(e: any) {
         if (!e) return;
@@ -30,9 +32,16 @@ export const CheckoutForm = memo(function CheckoutFormComponent(props: CheckoutF
         async function order() {
             try {
                 setIsLoading(true);
+
+                const userId = cookie.get('id');
+
+                if (!userId) {
+                    throw new Error('User not found');
+                }
+
                 const { data } = await makeOrder({
                     ...formData as Omit<MakeOrderDto, "id" | "paymentType" | "productId" | "quantity">,
-                    id: 1,
+                    id: Number(userId),
                     paymentType: 'cod',
                     productId: Number(items[0].id),
                     quantity: items[0].cartQuantity,
