@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { getCategoriesFromString, splitString } from '../helpers';
 import { v4 as uuidv4 } from 'uuid';
 import { SupabaseHelper } from 'src/common/helpers';
+import { isNumber } from '@nestjs/common/utils/shared.utils';
 @Injectable()
 export class ProductService {
   private readonly logger = new Logger(ProductService.name);
@@ -99,6 +100,34 @@ export class ProductService {
     });
 
     return products;
+  }
+
+  async getProductById(productId: string, query: SearchProductQuery) {
+    if (!productId || !isNumber(Number(productId)))
+      throw new Error('Product ID is required');
+
+    const product = await this.dbService.products.findUnique({
+      where: {
+        id: Number(productId),
+      },
+      include: {
+        product_categories: {
+          select: {
+            category: true,
+          },
+          where: {
+            ...this.getProductCategoriesCondition(query.categories),
+          },
+        },
+        product_images: {
+          select: {
+            image_url: true,
+          },
+        },
+      },
+    });
+
+    return product || {};
   }
 
   private getProductFilterCondition(query: SearchProductQuery) {

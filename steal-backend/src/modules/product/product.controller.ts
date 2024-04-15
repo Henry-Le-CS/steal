@@ -3,11 +3,10 @@ import {
   Controller,
   Inject,
   Logger,
+  Param,
   Query,
   Request,
   Response,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CustomGet, CustomPost } from 'src/common/decorators';
@@ -45,6 +44,8 @@ export class ProductController {
         },
       });
     } catch (err) {
+      this.logger.error(err.message);
+
       res.status(400).send({
         message: err.message,
       });
@@ -67,6 +68,36 @@ export class ProductController {
         data: products,
       });
     } catch (err) {
+      this.logger.error(err.message);
+
+      res.status(400).send({
+        message: err.message,
+      });
+    }
+  }
+
+  @CustomGet({
+    isPublic: true,
+    description: 'Get a product by ID',
+    path: ':id',
+  })
+  async handleGetProductById(
+    @Param('id') productId: string,
+    @Query() query: SearchProductQuery,
+    @Response() res: Res,
+  ) {
+    try {
+      const product = await this.productService.getProductById(
+        productId,
+        query,
+      );
+
+      res.status(200).send({
+        data: product,
+      });
+    } catch (err) {
+      this.logger.error(err.message);
+
       res.status(400).send({
         message: err.message,
       });
