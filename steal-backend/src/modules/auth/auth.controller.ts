@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Inject,
   Logger,
@@ -13,9 +14,13 @@ import { Request as Req, Response as Res } from 'express';
 import { ICustomRequest } from './interfaces';
 import { ApiTags } from '@nestjs/swagger';
 import { CustomGet, CustomPost } from 'src/common/decorators';
-import { AUTHOR_SERVICES } from './auth.provider';
+import { ACCOUNT_SERVICES, AUTHOR_SERVICES } from './auth.provider';
 import { AuthorService } from './services/author.service';
-import { PlatformType } from './constants';
+import { AccountService } from './services/account.service';
+import {
+  AccountSignInDto,
+  AccountSignUpDto,
+} from './interfaces/account.interface';
 
 /**
  * AuthController
@@ -28,6 +33,7 @@ export class AuthController {
 
   constructor(
     @Inject(AUTHOR_SERVICES) private readonly authorService: AuthorService,
+    @Inject(ACCOUNT_SERVICES) private readonly accountService: AccountService,
   ) {}
 
   /** =============== LOG IN =================== */
@@ -105,7 +111,7 @@ export class AuthController {
       const { user, id } = session;
 
       const data = await this.authorService.getUserInfo({
-        type: platform as PlatformType,
+        type: platform as any,
         data: user,
         id,
       });
@@ -144,6 +150,59 @@ export class AuthController {
 
       res.status(400).send({
         data: err?.message || 'Bad request',
+      });
+    }
+  }
+
+  @CustomPost({
+    path: 'sign-in',
+    description: 'Sign in with email and password',
+  })
+  async signInWithEmail(@Body() body: AccountSignInDto, @Response() res: Res) {
+    try {
+      const { email, password } = body;
+
+      const data = await this.accountService.validateAccount(email, password);
+      const token = this.authorService.generateToken(data);
+
+      res.cookie('token', token, {
+        httpOnly: true,
+      });
+
+      res.status(200).send({ data });
+    } catch (err) {
+      const msg = err?.response?.data?.message;
+      this.logger.error(msg || err?.message || 'Bad request');
+
+      res.status(400).send({
+        data: msg || err?.message || 'Bad request',
+      });
+    }
+  }
+
+  /** ================ SIGN UP ================== */
+  @CustomPost({
+    path: 'sign-up',
+    description: 'Sign up with email and password',
+    isPublic: true,
+  })
+  async signUpWithEmail(@Body() body: AccountSignUpDto, @Response() res: Res) {
+    try {
+      const { email, password, username } = body;
+
+      const data = await this.accountService.registerAccount(
+        username,
+        email,
+        password,
+      );
+
+      res.status(200).send({ data });
+    } catch (err) {
+      const msg = err?.response?.data?.message;
+      this.logger.error(msg || err?.message || 'Bad request');
+
+      res.status(400).send({
+        data: msg || err?.message || 'Bad request',
       });
     }
   }

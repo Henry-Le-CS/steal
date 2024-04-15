@@ -6,6 +6,7 @@ import {
   UserInfoPayload,
 } from '../interfaces';
 import { PlatformType } from '../constants';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthorService implements IAuthorService {
@@ -16,6 +17,8 @@ export class AuthorService implements IAuthorService {
 
     switch (type) {
       case PlatformType.GOOGLE:
+        break;
+      case PlatformType.CREDENTIALS:
         break;
       default:
         break;
@@ -50,5 +53,13 @@ export class AuthorService implements IAuthorService {
       ...data,
       id,
     };
+  }
+
+  generateToken(data: { username: string; email: string }) {
+    const { username, email } = data;
+
+    return jwt.sign({ username, email }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
   }
 }
