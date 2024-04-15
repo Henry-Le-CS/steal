@@ -1,4 +1,4 @@
-export enum CheckoutType {
+export enum PaymentType {
   COD = 'cod',
   MOMO = 'momo',
 }

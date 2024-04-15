@@ -9,6 +9,7 @@ import { ProductModule } from './modules/product/product.module';
 import { CheckOutModule } from './modules/check-out/check-out.module';
 // import { APP_GUARD } from '@nestjs/core';
 // import { AuthGuard } from './common/guards/auth.guard'
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   controllers: [AppController],
@@ -23,6 +24,7 @@ export class AppModule {
     modules.push(EmailModule.register());
     modules.push(ProductModule.register());
     modules.push(CheckOutModule.register());
+    modules.push(OrderModule.register());
 
     // Bull MQ for task queue
     modules.push(

@@ -1,8 +1,5 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import {
-  CheckOutServiceProvider,
-  PriceServiceProvider,
-} from './checkout-provider';
+import { PriceServiceProvider } from './checkout-provider';
 import { CheckOutController } from './check-out.controller';
 
 @Module({})
@@ -11,7 +8,6 @@ export class CheckOutModule {
     const providers: Provider[] = [];
 
     providers.push(PriceServiceProvider);
-    providers.push(CheckOutServiceProvider);
 
     return {
       providers,

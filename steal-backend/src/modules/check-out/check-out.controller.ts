@@ -1,9 +1,8 @@
 import { Body, Controller, Inject, Logger, Param } from '@nestjs/common';
 import { CustomPost } from 'src/common/decorators';
-import { CHECKOUT_SERVICES, PRICE_SERVICES } from './checkout-provider';
-import { CheckoutDto, GetPricePayloadType } from './types';
+import { PRICE_SERVICES } from './checkout-provider';
+import { GetPricePayloadType } from './types';
 import { PriceService } from './services/price.service';
-import { CheckOutService } from './services/check-out.service';
 
 @Controller('check-out')
 export class CheckOutController {
@@ -11,60 +10,7 @@ export class CheckOutController {
 
   constructor(
     @Inject(PRICE_SERVICES) private readonly priceService: PriceService,
-    @Inject(CHECKOUT_SERVICES)
-    private readonly checkOutService: CheckOutService,
   ) {}
-
-  @CustomPost({
-    description: 'Checkout the product in cart',
-    isPublic: true,
-    path: '/',
-  })
-  async handleCheckout(@Body() payload: CheckoutDto) {
-    try {
-      console.log(payload);
-      const { productId, quantity } = payload;
-
-      const res = await this.priceService.getTotalPriceForProduct(
-        productId,
-        quantity,
-      );
-
-      if (!res) {
-        throw new Error('Product not found');
-      }
-
-      const { totalPrice } = res;
-
-      const order = await this.checkOutService.checkOutProducts({
-        ...payload,
-        totalPrice,
-      });
-
-      if (!order?.id) {
-        throw new Error('Failed to checkout');
-      }
-
-      const { id: orderId, user_id: userId, status, amount } = order;
-
-      return {
-        data: {
-          orderId,
-          userId,
-          totalPrice,
-          status,
-          productId,
-          amount,
-        },
-      };
-    } catch (err) {
-      this.logger.error(err);
-
-      return {
-        message: err.message,
-      };
-    }
-  }
 
   @CustomPost({
     path: '/price',

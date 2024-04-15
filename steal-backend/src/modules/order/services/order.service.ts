@@ -1,24 +1,24 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
-import { CheckoutPayloadDto } from '../types';
-import { CheckoutType } from '../constants';
+import { PaymentType } from '../constants';
+import { OrderPayloadDto } from '../types';
 
 @Injectable()
-export class CheckOutService {
-  private readonly logger = new Logger(CheckOutService.name);
+export class OrderService {
+  private readonly logger = new Logger(OrderService.name);
 
   constructor(
     @Inject(DATABASE_SERVICES) private readonly dbService: PrismaClient,
   ) {}
 
-  async checkOutProducts(payload: CheckoutPayloadDto) {
+  async makeOrder(payload: OrderPayloadDto) {
     this.logger.log('Checking out products for user with ID: ' + payload.id);
 
     const { paymentType } = payload;
 
     switch (paymentType) {
-      case CheckoutType.COD:
+      case PaymentType.COD:
         break;
       default:
         throw new Error(`Payment type ${paymentType} not supported`);
@@ -29,7 +29,7 @@ export class CheckOutService {
     return order;
   }
 
-  async executeOrderTransaction(payload: CheckoutPayloadDto) {
+  async executeOrderTransaction(payload: OrderPayloadDto) {
     const { productId, quantity } = payload;
 
     try {
@@ -48,8 +48,6 @@ export class CheckOutService {
         if (product.amount < quantity) {
           throw new Error('Product quantity is not enough in stock');
         }
-
-        console.log('Product:', product);
 
         // Update the product quantity
         await tx.products.update({
@@ -70,7 +68,7 @@ export class CheckOutService {
     }
   }
 
-  async createOrder(tx: PrismaClient, payload: CheckoutPayloadDto) {
+  async createOrder(tx: PrismaClient, payload: OrderPayloadDto) {
     const {
       id,
       address,

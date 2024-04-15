@@ -1,9 +1,7 @@
 import { IsNumber, IsString } from 'class-validator';
-import { CheckoutType } from '../constants';
+import { PaymentType } from '../constants';
 
-export type PaymentType = CheckoutType;
-
-export class CheckoutDto {
+export class OrderDto {
   @IsNumber()
   id: number;
 
@@ -38,7 +36,7 @@ export class CheckoutDto {
   quantity: number;
 }
 
-export class CheckoutPayloadDto extends CheckoutDto {
+export class OrderPayloadDto extends OrderDto {
   @IsNumber()
   totalPrice: number;
 }
