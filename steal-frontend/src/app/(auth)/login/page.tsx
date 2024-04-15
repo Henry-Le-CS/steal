@@ -6,8 +6,51 @@ import * as Form from '@radix-ui/react-form';
 import { CiUser } from "react-icons/ci";
 import { CiLock } from "react-icons/ci";
 import { Button } from "primereact/button";
-
+import { signIn } from "@/apis/auth";
+import { FormEvent, use, useState } from "react";
+import { useCookies } from 'next-client-cookies';
+import { useRouter } from "next/navigation";
 const LoginPage = () => {
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const router = useRouter()
+    const cookie = useCookies();
+
+    async function onSubmit(e: FormEvent<HTMLFormElement>) {
+        try {
+            e.preventDefault();
+            setIsLoading(true);
+            const formData = new FormData(e.currentTarget);
+
+            const email = formData.get('email') as string;
+            const password = formData.get('password') as string;
+
+            const { data, message } = await signIn({ email, password });
+
+            if (!data || message) {
+                setError(message || 'Invalid email or password');
+
+                window.alert('Invalid email or password');
+                return;
+            }
+
+            console.log(data.username);
+
+            cookie.set('username', data.username);
+            router.push('/home')
+
+            setError(null);
+        }
+        catch (err: any) {
+            const msg = err?.response?.data?.message || err?.message || JSON.stringify(err);
+            window.alert('Invalid email or password');
+            setError(msg);
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
     return (
         <AuthLayout shadowColor={LOGIN_MAIN_COLOR}>
             <div className={
@@ -16,9 +59,7 @@ const LoginPage = () => {
                     `bg-[#036147]`
                 ])
             }>
-                <Form.Root onSubmit={() => {
-                    window.alert('login')
-                }} className="w-[320px] flex flex-col items-center justify-center gap-8">
+                <Form.Root onSubmit={onSubmit} className="w-[320px] flex flex-col items-center justify-center gap-8">
                     <Form.Field className="w-full" name="email">
                         <div className="relative flex p-2 text-white items-center justify-start gap-1 border border-[white] rounded-sm">
                             <CiUser size={32} />
@@ -65,8 +106,9 @@ const LoginPage = () => {
                         </div>
                     </Form.Field>
 
-                    <Form.Submit asChild>
-                        <Button className="w-full text-[#036147] border shadow-lg bg-white px-2 py-2" label="LOGIN" />
+                    <Form.Submit className="relative" asChild>
+                        <Button loading={isLoading} className="w-full text-[#036147] border shadow-lg bg-white px-2 py-2" label="LOGIN">
+                        </Button>
                     </Form.Submit>
                 </Form.Root>
             </div>
