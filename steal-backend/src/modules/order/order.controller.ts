@@ -23,7 +23,6 @@ export class OrderController {
   })
   async handleCheckout(@Body() payload: OrderDto) {
     try {
-      console.log(payload);
       const { productId, quantity } = payload;
 
       const res = await this.priceService.getTotalPriceForProduct(

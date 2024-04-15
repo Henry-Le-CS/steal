@@ -269,7 +269,6 @@ export class ProductService {
 
   private normalizeProduct(product: any) {
     const { product_images, product_categories, ...rest } = product;
-    console.log('product_images', product_images, product_categories)
     return {
       ...rest,
       images: product_images.map((img) => img.image_url),
