@@ -86,9 +86,6 @@ export class ProductService {
           select: {
             category: true,
           },
-          where: {
-            ...this.getProductCategoriesCondition(categories),
-          },
         },
         product_images: {
           select: {
@@ -106,7 +103,22 @@ export class ProductService {
       take: take,
     });
 
-    return products;
+    const filteredProducts = products.filter((product) => {
+      const categories = product.product_categories.map(
+        (category) => category.category,
+      );
+
+      const queriedCategories = splitString(query.categories || '');
+      return queriedCategories.every((category) =>
+        categories.includes(category),
+      );
+    });
+
+    const normalizedProducts = filteredProducts.map((product) => {
+      return this.normalizeProduct(product);
+    });
+
+    return normalizedProducts;
   }
 
   async getProductById(productId: string, query: SearchProductQuery) {
@@ -122,9 +134,6 @@ export class ProductService {
           select: {
             category: true,
           },
-          where: {
-            ...this.getProductCategoriesCondition(query.categories),
-          },
         },
         product_images: {
           select: {
@@ -133,8 +142,15 @@ export class ProductService {
         },
       },
     });
+    if (!product) throw new Error('Product not found');
 
-    return product || {};
+    const filteredCategories = product.product_categories.filter((category) => {
+      const categories = splitString(query.categories || '');
+
+      return categories.includes(category.category);
+    });
+
+    return this.normalizeProduct(filteredCategories);
   }
 
   private getProductFilterCondition(query: SearchProductQuery) {
@@ -232,5 +248,15 @@ export class ProductService {
     });
 
     return products;
+  }
+
+  private normalizeProduct(product: any) {
+    const { product_images, product_categories, ...rest } = product;
+
+    return {
+      ...rest,
+      images: product_images.map((img) => img.image_url),
+      categories: product_categories.map((category) => category.category),
+    };
   }
 }
