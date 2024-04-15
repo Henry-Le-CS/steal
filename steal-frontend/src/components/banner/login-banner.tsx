@@ -3,6 +3,7 @@ import { useBannerSlide } from "@/store/hooks";
 import Image, { StaticImageData } from "next/image";
 import { FC, HtmlHTMLAttributes, memo, useState } from "react";
 import shopIcon from '@/assets/shOp.svg';
+import { AuthBannerText } from "./auth-banner-text";
 
 interface BannerProps extends HtmlHTMLAttributes<HTMLDivElement> {
     src: StaticImageData[];
@@ -20,7 +21,10 @@ const AuthBannerComponent: FC<BannerProps> = (props) => {
     return <div style={{
         zIndex: 5
     }} className="relative" {...rest}>
-        <Image className="h-full" src={src[currentSlideIndex]} alt="Banner image" />
+        <div className="h-full relative">
+            <Image className="h-full" src={src[currentSlideIndex]} alt="Banner image"></Image>
+            <AuthBannerText />
+        </div>
     </div>
 
 }
