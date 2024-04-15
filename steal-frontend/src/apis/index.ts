@@ -6,3 +6,4 @@ export const axiosInstance = axios.create({
 
 export * from './product'
 export * from './checkout'
+export * from './order'

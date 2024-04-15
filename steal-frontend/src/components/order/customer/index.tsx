@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { OrderedItem, OrderedItemType } from "./ordered-item";
 import { Spinner } from "@/components/ui/spinner";
 import { MOCK_ORDERED_ITEMS } from "@/common/data/order";
+import { OrderType, getOrdersOfUser } from "@/apis";
 const TABS = [
     {
         title: "All",
@@ -36,13 +37,30 @@ export const CustomerOrder = function CustomerOrderComponent() {
     const [isLoading, setIsLoading] = useState(false)
     const [orderedItems, setOrderedItems] = useState<OrderedItemType[]>([])
 
+    function extractOrderedItems(data: OrderType[]): OrderedItemType[] {
+        return data.map((order) => ({
+            id: `${order.id}`,
+            imageUrl: order.product.images[0],
+            title: order.product.name,
+            price: order.total_price,
+            count: order.amount,
+            description: order.note,
+            status: order.status
+        }))
+    }
+
     useEffect(() => {
         async function fetchOrderedItems() {
             try {
                 setIsLoading(true)
-                await new Promise((resolve) => setTimeout(resolve, 200))
 
-                setOrderedItems(MOCK_ORDERED_ITEMS)
+                const { data, message } = await getOrdersOfUser("1");
+
+                if (!data) return;
+
+                const orderedItems = extractOrderedItems(data);
+
+                setOrderedItems(orderedItems)
             }
             catch (err) {
                 console.error(err)
