@@ -32,6 +32,7 @@ const ProductDetailComponent: FC<ProductDetailProps> = (props) => {
             <span className="text-base font-light">Remaining: <span>{remaining}</span></span>
             <span className="text-base font-light">Brand: <span>{brand}</span></span>
             <span className="text-base font-light">Category: <span>{category}</span></span>
+            <span className="text-base font-light">Posted at: <span>{postedAt}</span></span>
         </div>
 
         <AddToCart />

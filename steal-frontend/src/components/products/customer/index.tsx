@@ -9,6 +9,7 @@ import { Paginator } from 'primereact/paginator';
 import { ProductCard } from "./product-card";
 import { ProductType, getAllProducts } from "@/apis";
 import { ProductBriefType } from "@/store/types";
+import { ProductActionEnum } from "@/store/reducers";
 
 const ProductListComponent: FC = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +27,7 @@ const ProductListComponent: FC = () => {
                 title: product.name,
                 price: product.price,
                 count: product.amount,
-                postedAt: formatDate(product.created_at)
+                postedAt: product.created_at
             }
         })
 
@@ -41,7 +42,7 @@ const ProductListComponent: FC = () => {
 
                 const { data } = await getAllProducts({
                     page: `${currentPage}`,
-                    q: search,
+                    q: search.trim(),
                     order: order,
                 });
 
@@ -49,10 +50,11 @@ const ProductListComponent: FC = () => {
 
                 productDispatch(
                     {
-                        type: 'SET_PRODUCTS',
+                        type: ProductActionEnum.SET_ALL,
                         payload: {
                             products: products,
-                            total: data?.total || 0
+                            total: data?.total || 0,
+                            currentPageCount: data?.products?.length || 0
                         }
                     }
                 )

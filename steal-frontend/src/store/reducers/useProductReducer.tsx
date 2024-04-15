@@ -10,6 +10,7 @@ export enum ProductActionEnum {
     SET_ORDER = 'SET_ORDER',
     SET_PRODUCTS = 'SET_PRODUCTS',
     SET_ALL = 'SET_ALL',
+    SET_CURRENT_PAGE_COUNT = 'SET_CURRENT_PAGE_COUNT'
 }
 
 const initialProductState: ProductStateType = {
@@ -22,6 +23,7 @@ const initialProductState: ProductStateType = {
     unit: PriceUnit.VND,
     order: '',
     total: 0,
+    currentPageCount: 0
 }
 
 export const productReducer = (state: ProductStateType, action: ProductActionType) => {

@@ -21,6 +21,7 @@ export type ProductStateType = {
     unit: PriceUnit;
     order: OrderByPriceType;
     total: number;
+    currentPageCount: number;
 }
 
 export type ProductActionType = {
