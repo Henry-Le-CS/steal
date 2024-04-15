@@ -3,7 +3,7 @@ import { Card } from 'primereact/card';
 import { useProductContext } from "@/store/contexts";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { MOCK_PRODUCTS } from "@/common/data";
-import { formartNumber } from "@/common/helper";
+import { extractBriefDataInfo, formartNumber } from "@/common/helper";
 import Link from "next/link";
 import { Paginator } from 'primereact/paginator';
 import { ProductCard } from "./product-card";
@@ -19,20 +19,7 @@ const ProductListComponent: FC = () => {
     const { productState, productDispatch } = useProductContext()
     const { products, search, order, currentPage, unit, total, categories, range } = productState
 
-    function extractBriefDataInfo(data: Array<ProductType>): ProductBriefType[] {
-        const products = data.map((product) => {
-            return {
-                id: `${product.id}`,
-                imageUrl: product.images[0],
-                title: product.name,
-                price: product.price,
-                count: product.amount,
-                postedAt: product.created_at
-            }
-        })
 
-        return products
-    }
 
     useEffect(() => {
         // Fetch data from server

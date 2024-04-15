@@ -6,6 +6,8 @@ import { FC, memo, useEffect, useState } from "react"
 import { ProductCard } from "../customer/product-card";
 import { PriceUnit } from "@/common/constants/products";
 import { useParams } from "next/navigation";
+import { getAllProducts, getProductById } from "@/apis";
+import { extractBriefDataInfo } from "@/common/helper";
 
 const RelatedProductsListComponent: FC = (props) => {
     const { id } = useParams()
@@ -17,12 +19,21 @@ const RelatedProductsListComponent: FC = (props) => {
         const fetchData = async (id: string) => {
             try {
                 setIsLoading(true)
-                await new Promise(resolve => setTimeout(resolve, 200))
+                const { data } = await getProductById(Number(id));
 
-                const products = MOCK_PRODUCTS.filter(p => p.id !== id);
-                const relatedProducts = products.slice(0, 3);
+                if (!data) return;
 
-                setRelatedProducts(relatedProducts);
+                const { categories } = data
+
+                const { data: ret } = await getAllProducts({
+                    categories: categories.join(','),
+                })
+
+                if (!ret) return;
+
+                const rp = extractBriefDataInfo(ret?.products).slice(0, 3)
+
+                setRelatedProducts(rp);
             }
             catch (err) {
                 console.error(err)
