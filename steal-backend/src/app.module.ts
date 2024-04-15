@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { EmailModule } from './modules/email/email.module';
 import { DatabaseModule } from './modules/database/database.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './common/guards/auth.guard';
 import { BullModule } from '@nestjs/bull';
+import { ProductModule } from './modules/product/product.module';
+// import { APP_GUARD } from '@nestjs/core';
+// import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
   controllers: [AppController],
@@ -19,6 +20,7 @@ export class AppModule {
     modules.push(AuthModule.register());
     modules.push(DatabaseModule.register());
     modules.push(EmailModule.register());
+    modules.push(ProductModule.register());
 
     // Bull MQ for task queue
     modules.push(
@@ -37,10 +39,10 @@ export class AppModule {
       global: true,
       imports: modules,
       providers: [
-        {
-          provide: APP_GUARD,
-          useClass: AuthGuard,
-        },
+        // {
+        //   provide: APP_GUARD,
+        //   useClass: AuthGuard,
+        // },
       ],
     };
   }

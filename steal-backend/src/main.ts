@@ -9,7 +9,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 dotenv.config();
 
@@ -28,6 +28,9 @@ async function bootstrap() {
       store: new MySQLSessionStore(MySQLStoreOptions),
     }),
   );
+
+  // Configure validation
+  app.useGlobalPipes(new ValidationPipe());
 
   // Configure Swagger for API documentation
   const config = new DocumentBuilder()
