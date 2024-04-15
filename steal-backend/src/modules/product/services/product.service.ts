@@ -274,7 +274,7 @@ export class ProductService {
     };
   }
 
-  async getAllProduct(productIds: number[]) {
+  async getAllProductsByIds(productIds: number[]) {
     const products = await this.dbService.products.findMany({
       where: {
         id: {
@@ -294,8 +294,6 @@ export class ProductService {
         },
       },
     });
-
-    console.log(products);
 
     return products.map((p) => this.normalizeProduct(p));
   }

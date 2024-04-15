@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
 import { PaymentType } from '../constants';
 import { OrderPayloadDto } from '../types';
+import { PRODUCT_SERVICES } from 'src/modules/product/product.provider';
+import { ProductService } from 'src/modules/product/services/product.service';
 
 @Injectable()
 export class OrderService {
@@ -10,6 +12,7 @@ export class OrderService {
 
   constructor(
     @Inject(DATABASE_SERVICES) private readonly dbService: PrismaClient,
+    @Inject(PRODUCT_SERVICES) private readonly productService: ProductService,
   ) {}
 
   async makeOrder(payload: OrderPayloadDto) {
@@ -105,10 +108,22 @@ export class OrderService {
   }
 
   async getOrdersByUserId(userId: number) {
-    const orders = this.dbService.orders.findMany({
+    const orders = await this.dbService.orders.findMany({
       where: { user_id: userId },
     });
 
-    return orders;
+    const ids = orders.map((order) => order.product_id);
+
+    const products = await this.productService.getAllProductsByIds(ids);
+
+    const joinedOrders = orders.map((order) => {
+      const product = products.find(
+        (product) => product.id === order.product_id,
+      );
+
+      return { ...order, product };
+    });
+
+    return joinedOrders;
   }
 }
