@@ -28,8 +28,8 @@ export const OrderedItem = memo(function OrderedItemComponent(props: OrderedItem
     const { imageUrl, title, price, count, description, status } = item;
 
     return <div className="w-full shadow-lg rounded-lg py-2 px-4 h-max flex items-center justify-center gap-8">
-        <div className="w-[25%] flex items-center justify-center h-full border rounded-lg min-h-[250px] bg-[#d3d3d3] bg-opacity-5">
-            <Img className="border border-[0.5px]" src="https://primefaces.org/cdn/primereact/images/usercard.png" alt="Product image" />
+        <div className="w-[25%] flex items-center justify-center h-full border rounded-lg min-h-[250px] bg-[#d3d3d3] bg-opacity-5 p-2">
+            <Img className="" src={imageUrl} alt="Product image" />
         </div>
         <div className="w-[85%] grid grid-rows-4">
             <div className="w-full flex items-center justify-end border-b text-sm">
