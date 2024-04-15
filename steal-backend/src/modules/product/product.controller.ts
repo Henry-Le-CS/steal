@@ -5,14 +5,13 @@ import {
   Logger,
   Param,
   Query,
-  Request,
   Response,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CustomGet, CustomPost } from 'src/common/decorators';
 import { PRODUCT_SERVICES } from './product.provider';
 import { ProductService } from './services/product.service';
-import { Request as Req, Response as Res } from 'express';
+import { Response as Res } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
 import { SearchProductQuery, UploadProductDto } from './types';
 
@@ -63,6 +62,34 @@ export class ProductController {
   ) {
     try {
       const products = await this.productService.getAllProducts(query);
+
+      res.status(200).send({
+        data: products,
+      });
+    } catch (err) {
+      this.logger.error(err.message);
+
+      res.status(400).send({
+        message: err.message,
+      });
+    }
+  }
+
+  @CustomGet({
+    isPublic: true,
+    description: 'Get all product by owner_id',
+    path: 'owner/:ownerId',
+  })
+  async getAllProductByOwnerId(
+    @Param('ownerId') ownerId: string,
+    @Query() query: SearchProductQuery,
+    @Response() res: Res,
+  ) {
+    try {
+      const products = await this.productService.getAllProductByOwnerId(
+        ownerId,
+        query,
+      );
 
       res.status(200).send({
         data: products,

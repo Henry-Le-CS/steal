@@ -34,4 +34,6 @@ export type SearchProductQuery = {
   range?: string; // a,b
   categories?: string; // a,b
   order?: Order;
+  page?: string;
+  size?: string;
 };

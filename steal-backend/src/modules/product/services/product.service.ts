@@ -72,6 +72,11 @@ export class ProductService {
   }
 
   async getAllProducts(query: SearchProductQuery) {
+    const { categories, page, size } = query;
+
+    const take = Number(size) || 9;
+    const skip = Number(page) ? Number(page) * take : 0;
+
     const products = await this.dbService.products.findMany({
       where: {
         ...this.getProductFilterCondition(query),
@@ -82,7 +87,7 @@ export class ProductService {
             category: true,
           },
           where: {
-            ...this.getProductCategoriesCondition(query.categories),
+            ...this.getProductCategoriesCondition(categories),
           },
         },
         product_images: {
@@ -97,6 +102,8 @@ export class ProductService {
           created_at: 'asc' | 'desc' | 'desc' | 'asc' | undefined;
         }),
       },
+      skip,
+      take: take,
     });
 
     return products;
@@ -184,5 +191,46 @@ export class ProductService {
         in: splitString(categories),
       },
     };
+  }
+
+  async getAllProductByOwnerId(ownerId: string, query: SearchProductQuery) {
+    if (!Number(ownerId)) throw new Error('Owner ID must be integer');
+
+    const { categories, page, size } = query;
+
+    const take = Number(size) || 9;
+    const skip = Number(page) ? Number(page) * take : 0;
+
+    const products = await this.dbService.products.findMany({
+      where: {
+        owner_id: Number(ownerId),
+        ...this.getProductFilterCondition(query),
+      },
+      include: {
+        product_categories: {
+          select: {
+            category: true,
+          },
+          where: {
+            ...this.getProductCategoriesCondition(categories),
+          },
+        },
+        product_images: {
+          select: {
+            image_url: true,
+          },
+        },
+      },
+      orderBy: {
+        ...(this.getProductOrderCondition(query) as {
+          price: 'asc' | 'desc' | 'desc' | 'asc' | undefined;
+          created_at: 'asc' | 'desc' | 'desc' | 'asc' | undefined;
+        }),
+      },
+      skip,
+      take: take,
+    });
+
+    return products;
   }
 }
