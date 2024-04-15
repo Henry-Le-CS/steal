@@ -1,5 +1,6 @@
 "use client";
 import { RouteType } from "@/common/types";
+import { ProfilePopover } from "@/components/profile";
 import clsx from "clsx";
 import { useCookies } from "next-client-cookies";
 import Link from "next/link";
@@ -44,6 +45,7 @@ const ClientNavbarComponent: FC<IClientNavbarProps> = (props) => {
                         <span>{route.title}</span>
                     </Link>
                 ))}
+                <ProfilePopover />
             </div>
         </div>
     );
