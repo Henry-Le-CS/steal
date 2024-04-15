@@ -24,4 +24,5 @@ export const CUSTOMER_ROUTES: RouteType[] = [
         icon: () => <CartIcon />,
         title: ""
     },
+
 ]
