@@ -80,6 +80,9 @@ export class ProductService {
     const products = await this.dbService.products.findMany({
       where: {
         ...this.getProductFilterCondition(query),
+        amount: {
+          not: 0,
+        }
       },
       include: {
         product_categories: {
@@ -103,6 +106,17 @@ export class ProductService {
       take: take,
     });
 
+    const hasMore = await this.dbService.products.count({
+      where: {
+        ...this.getProductFilterCondition(query),
+        amount: {
+          not: 0,
+        }
+      },
+    })
+
+
+
     const filteredProducts = products.filter((product) => {
       const categories = product.product_categories.map(
         (category) => category.category,
@@ -116,13 +130,14 @@ export class ProductService {
       );
     });
 
-    console.log(filteredProducts);
-
     const normalizedProducts = filteredProducts.map((product) => {
       return this.normalizeProduct(product);
     });
 
-    return normalizedProducts;
+    return {
+      products: normalizedProducts,
+      total: hasMore,
+    };
   }
 
   async getProductById(productId: string, query: SearchProductQuery) {
@@ -132,6 +147,9 @@ export class ProductService {
     const product = await this.dbService.products.findUnique({
       where: {
         id: Number(productId),
+        amount: {
+          not: 0,
+        }
       },
       include: {
         product_categories: {
@@ -146,16 +164,10 @@ export class ProductService {
         },
       },
     });
+
     if (!product) throw new Error('Product not found');
 
-    const filteredCategories = product.product_categories.filter((category) => {
-      if(!query.categories) return true;
-
-      const categories = splitString(query.categories || '');
-      return categories.includes(category.category);
-    });
-
-    return this.normalizeProduct(filteredCategories);
+    return this.normalizeProduct(product);
   }
 
   private getProductFilterCondition(query: SearchProductQuery) {
@@ -257,7 +269,7 @@ export class ProductService {
 
   private normalizeProduct(product: any) {
     const { product_images, product_categories, ...rest } = product;
-
+    console.log('product_images', product_images, product_categories)
     return {
       ...rest,
       images: product_images.map((img) => img.image_url),

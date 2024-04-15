@@ -7,6 +7,8 @@ import { formartNumber } from "@/common/helper";
 import Link from "next/link";
 import { Paginator } from 'primereact/paginator';
 import { ProductCard } from "./product-card";
+import { ProductType, getAllProducts } from "@/apis";
+import { ProductBriefType } from "@/store/types";
 
 const ProductListComponent: FC = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -16,18 +18,41 @@ const ProductListComponent: FC = () => {
     const { productState, productDispatch } = useProductContext()
     const { products, search, order, currentPage, unit, total, categories, range } = productState
 
+    function extractBriefDataInfo(data: Array<ProductType>): ProductBriefType[] {
+        const products = data.map((product) => {
+            return {
+                id: `${product.id}`,
+                imageUrl: product.images[0],
+                title: product.name,
+                price: product.price,
+                count: product.amount,
+                postedAt: formatDate(product.created_at)
+            }
+        })
+
+        return products
+    }
+
     useEffect(() => {
         // Fetch data from server
         async function fetchData() {
             try {
                 setIsLoading(true)
-                await new Promise((resolve) => setTimeout(resolve, 500))
+
+                const { data } = await getAllProducts({
+                    page: `${currentPage}`,
+                    q: search,
+                    order: order,
+                });
+
+                const products = extractBriefDataInfo(data?.products || []);
+
                 productDispatch(
                     {
                         type: 'SET_PRODUCTS',
                         payload: {
-                            products: MOCK_PRODUCTS,
-                            total: MOCK_PRODUCTS.length * 2
+                            products: products,
+                            total: data?.total || 0
                         }
                     }
                 )
@@ -61,10 +86,10 @@ const ProductListComponent: FC = () => {
         productDispatch({ type: 'SET_PAGE', payload: event.page });
     };
 
-    if (isLoading || !products?.length) return <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="#036147" animationDuration=".5s" />
+    if (isLoading) return <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="#036147" animationDuration=".5s" />
 
-    return <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-3 gap-4">
+    return <div className="w-full flex flex-col gap-4">
+        <div className="w-full grid grid-cols-3 gap-4 justify-between">
             {
                 products.map((product) => {
                     const { id } = product
