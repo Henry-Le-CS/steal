@@ -14,7 +14,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule.register());
+  const app = await NestFactory.create(AppModule.register(), { cors: true });
 
   const MySQLStoreOptions: MySQLStore.Options = getStoreOptions();
   const MySQLSessionStore = MySQLStore(session);
