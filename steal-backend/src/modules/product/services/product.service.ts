@@ -108,11 +108,15 @@ export class ProductService {
         (category) => category.category,
       );
 
+      if(!query.categories) return true;
+
       const queriedCategories = splitString(query.categories || '');
       return queriedCategories.every((category) =>
         categories.includes(category),
       );
     });
+
+    console.log(filteredProducts);
 
     const normalizedProducts = filteredProducts.map((product) => {
       return this.normalizeProduct(product);
@@ -145,8 +149,9 @@ export class ProductService {
     if (!product) throw new Error('Product not found');
 
     const filteredCategories = product.product_categories.filter((category) => {
-      const categories = splitString(query.categories || '');
+      if(!query.categories) return true;
 
+      const categories = splitString(query.categories || '');
       return categories.includes(category.category);
     });
 
