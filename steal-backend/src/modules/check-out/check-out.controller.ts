@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Logger, Param } from '@nestjs/common';
 import { CustomPost } from 'src/common/decorators';
 import { PRICE_SERVICES } from './checkout-provider';
-import { GetPricePayloadType } from './types';
+import { GetMultiplePriceDto, GetPricePayloadType } from './types';
 import { PriceService } from './services/price.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -19,7 +19,7 @@ export class CheckOutController {
     isPublic: true,
     description: 'Get total price for all products in cart',
   })
-  async getPriceForAllProducts(@Body() payload: GetPricePayloadType) {
+  async getPriceForAllProducts(@Body() payload: GetMultiplePriceDto) {
     try {
       const { type } = payload;
 

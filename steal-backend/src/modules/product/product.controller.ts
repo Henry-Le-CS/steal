@@ -103,6 +103,30 @@ export class ProductController {
     }
   }
 
+  @CustomPost({
+    isPublic: true,
+    description: 'Get a product by ID',
+    path: '/multiple',
+  })
+  async handleGetAllProduct(
+    @Body() body: { productIds: number[] },
+    @Response() res: Res,
+  ) {
+    try {
+      const product = await this.productService.getAllProduct(body.productIds);
+
+      res.status(200).send({
+        data: product,
+      });
+    } catch (err) {
+      this.logger.error(err.message);
+
+      res.status(400).send({
+        message: err.message,
+      });
+    }
+  }
+
   @CustomGet({
     isPublic: true,
     description: 'Get a product by ID',

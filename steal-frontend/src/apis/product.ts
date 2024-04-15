@@ -29,3 +29,11 @@ export const getProductById = async (id: number): Promise<ResponseData<ProductTy
 
     return data
 }
+
+export const getProductByIds = async (ids: number[]): Promise<ResponseData<ProductType[]>> => {
+    const {data} = await axiosInstance.post('/product/multiple', {
+        productIds: ids
+    })
+
+    return data
+}

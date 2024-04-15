@@ -82,7 +82,7 @@ export class ProductService {
         ...this.getProductFilterCondition(query),
         amount: {
           not: 0,
-        }
+        },
       },
       include: {
         product_categories: {
@@ -111,18 +111,16 @@ export class ProductService {
         ...this.getProductFilterCondition(query),
         amount: {
           not: 0,
-        }
+        },
       },
-    })
-
-
+    });
 
     const filteredProducts = products.filter((product) => {
       const categories = product.product_categories.map(
         (category) => category.category,
       );
 
-      if(!query.categories) return true;
+      if (!query.categories) return true;
 
       const queriedCategories = splitString(query.categories || '');
       return queriedCategories.every((category) =>
@@ -149,7 +147,7 @@ export class ProductService {
         id: Number(productId),
         amount: {
           not: 0,
-        }
+        },
       },
       include: {
         product_categories: {
@@ -274,5 +272,31 @@ export class ProductService {
       images: product_images.map((img) => img.image_url),
       categories: product_categories.map((category) => category.category),
     };
+  }
+
+  async getAllProduct(productIds: number[]) {
+    const products = await this.dbService.products.findMany({
+      where: {
+        id: {
+          in: productIds,
+        },
+      },
+      include: {
+        product_categories: {
+          select: {
+            category: true,
+          },
+        },
+        product_images: {
+          select: {
+            image_url: true,
+          },
+        },
+      },
+    });
+
+    console.log(products);
+
+    return products.map((p) => this.normalizeProduct(p));
   }
 }

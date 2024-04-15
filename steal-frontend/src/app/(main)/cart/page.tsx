@@ -8,6 +8,8 @@ import { CartItem } from "@/store/types/cart";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui"
 import { CheckoutForm } from "@/components/cart/checkout";
+import { getProductByIds } from "@/apis";
+import { extractBriefDataInfo } from "@/common/helper";
 
 
 export default function CartPage() {
@@ -21,9 +23,13 @@ export default function CartPage() {
     async function fetchCartItem() {
         const cart = getItemsFromCart();
 
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        const cartItems = MOCK_PRODUCTS.filter(product => cart[product.id]);
+        const ids = Object.keys(cart);
+        console.log('ids', ids);
+        const { data } = await getProductByIds(ids.map(id => parseInt(id)));
 
+        if (!data) return;
+
+        const cartItems = extractBriefDataInfo(data);
         const items = cartItems
             // Get from localStorage
             .map(item => ({
