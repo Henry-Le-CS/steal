@@ -93,7 +93,7 @@ model users {
   id       Int        @id @default(autoincrement())
   email    String?    @db.Text
   username String?    @db.VarChar(50)
-  password String?    @db.VarChar(50)
+  password String?    @db.Text
   salt     String?    @db.VarChar(50)
   orders   orders[]
   payments payments[]
