@@ -8,6 +8,7 @@ import { OrderType, ProductType, getOrdersOfUser, getProductsOfSellerById } from
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
 import { OrderedItem } from "../customer/ordered-item";
+import { ProviderOrderTab } from "./ordered-item";
 const TABS = [
     {
         title: "My Products",
@@ -79,7 +80,7 @@ export const ProviderOrder = function ProviderOrderComponent() {
 
     if (isLoading) return
 
-    return <Tabs defaultValue="all" className="w-[80%] p-2">
+    return <Tabs defaultValue="products" className="w-[80%] p-2">
         <TabsList onChange={(e) => console.log(e)} className="w-full grid-cols-6 text-[red] pt-6 py-2 px-25">
             {
                 TABS.map((tab) => (
@@ -109,20 +110,10 @@ export const ProviderOrder = function ProviderOrderComponent() {
 
         <TabsContent className="flex mt-[24px] flex-col w-full h-max items-start justify-center bg-white gap-2 p-2" value="order">
             <Search value={text} />
-            {
-                isLoading ?
-                    <Spinner /> :
-                    <div className="w-full p-4 flex flex-col gap-4 max-h-[450px] box-border overflow-y-scroll no-scrollbar border rounded-md ">
-                        {
-                            orderedItems.map((item, index) => (
-                                <OrderedItem key={index} item={item} />
-                            ))
-                        }
-                        {
-                            orderedItems.length === 0 && <span className="w-full text-center text-[black]">No order is conducted yet</span>
-                        }
-                    </div>
-            }
+            <ProviderOrderTab
+                isLoading={isLoading}
+                userId={`${cookie.get('id')}`}
+            />
         </TabsContent>
     </Tabs >
 

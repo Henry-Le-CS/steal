@@ -54,8 +54,14 @@ export type MakeOrderDto = {
     productId: number;
     quantity: number;
 }
+
 export const makeOrder = async (payload: MakeOrderDto) => {
     const {data} = await axiosInstance.post('/order', payload)
 
     return data
+}
+
+export const getOrdersOfSeller = async (sellerId: string): Promise<ResponseData<Array<OrderType>>> => {
+    const {data} = await axiosInstance.get(`/order/owner/${sellerId}`);
+    return data;
 }

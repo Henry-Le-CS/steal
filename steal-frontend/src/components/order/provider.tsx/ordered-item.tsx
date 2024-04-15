@@ -1,5 +1,6 @@
+'use client'
 import { Button } from "primereact/button";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { Image as Img } from "primereact/image";
 import truckSVG from "@/assets/truck.svg";
 import Image from "next/image";
@@ -8,8 +9,13 @@ import { CiCircleQuestion } from "react-icons/ci";
 import * as Separator from '@radix-ui/react-separator';
 import { PriceUnit } from "@/common/constants/products";
 import { formartNumber } from "@/common/helper";
+import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
+import { OrderType, getOrdersOfSeller, getProductsOfSellerById } from "@/apis";
+import { OrderedItemType } from "../customer/ordered-item";
+import Link from "next/link";
 
-export type ListItemType = {
+export type ProviderOrderedType = {
     id: string;
     imageUrl: string;
     title: string;
@@ -19,11 +25,11 @@ export type ListItemType = {
     status: string;
 }
 
-interface ListItemProps {
-    item: ListItemType
+interface ProviderOrderedProps {
+    item: ProviderOrderedType
 }
 
-export const ListItem = memo(function ListItemComponent(props: ListItemProps) {
+export const ProviderOrdered = memo(function ProviderOrderedComponent(props: ProviderOrderedProps) {
     const { item } = props;
     const { imageUrl, title, price, count, description, status } = item;
 
@@ -81,7 +87,7 @@ export const ListItem = memo(function ListItemComponent(props: ListItemProps) {
                 </span>
 
                 <span className="text-[#FF7125]">
-                    {formartNumber(price)}
+                    {formartNumber(price * count)}
                 </span>
 
                 <span className="">
@@ -90,8 +96,75 @@ export const ListItem = memo(function ListItemComponent(props: ListItemProps) {
             </div>
 
             <div className="w-full flex items-center justify-end">
-                <Button className="font-light py-3 px-6 border rounded-md text-[#036147] shadow-none hover:bg-[#d3d3d3] hover:bg-opacity-40" label="View Details" />
+                <Link href={`/product/${item.id}`} rel="noopener noreferrer" target="_blank">
+                    <Button className="font-light py-3 px-6 border rounded-md text-[#036147] shadow-none hover:bg-[#d3d3d3] hover:bg-opacity-40" label="View Product Details" />
+                </Link>
             </div>
         </div>
     </div>
 });
+
+export const ProviderOrderTab = memo(function ProviderOrderTabComponent(props: {
+    isLoading: boolean;
+    userId: string;
+}) {
+    const { userId, isLoading } = props;
+    const [orderedItems, setOrderedItems] = useState<ProviderOrderedType[]>([]);
+    const router = useRouter();
+
+    function extractOrderedItems(data: OrderType[]): OrderedItemType[] {
+        return data.map((order) => ({
+            id: `${order.id}`,
+            imageUrl: order.product.images[0],
+            title: order.product.name,
+            price: order.total_price,
+            count: order.amount,
+            description: order.note,
+            status: order.status
+        }))
+    }
+
+    useEffect(() => {
+        // Fetch all product of the owner
+        async function fetchOrderedItems() {
+            try {
+
+                if (!userId) {
+                    router.push('/login')
+                    return;
+                }
+
+                const { data, message } = await getOrdersOfSeller(userId);
+
+                if (!data || message) {
+                    throw new Error(message || 'Cannot get orders')
+                };
+
+                const orderedItems = extractOrderedItems(data);
+
+                setOrderedItems(orderedItems)
+            }
+            catch (err) {
+                console.error(err)
+            }
+        }
+
+        fetchOrderedItems();
+    }, [])
+
+    if (isLoading) {
+        return <Spinner />
+    }
+
+    return <div className="w-full p-4 flex flex-col gap-4 max-h-[450px] box-border overflow-y-scroll no-scrollbar border rounded-md ">
+        {
+            orderedItems.map((item, index) => (
+                <ProviderOrdered key={index} item={item} />
+            ))
+        }
+        {
+            orderedItems.length === 0 && <span className="w-full text-center text-[black]">No order is conducted yet</span>
+        }
+    </div>
+
+})
