@@ -126,4 +126,26 @@ export class OrderService {
 
     return joinedOrders;
   }
+
+  async getOrdersByOwnerId(ownerId: number) {
+    const products = await this.productService.getProductsOfSellerById(ownerId);
+    const ids = products.map((product) => product.id);
+
+    const orders = await this.dbService.orders.findMany({
+      where: { product_id: { in: ids } },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    const ret = orders.map((order) => {
+      const product = products.find(
+        (product) => product.id === order.product_id,
+      );
+
+      return { ...order, product };
+    });
+
+    return ret;
+  }
 }

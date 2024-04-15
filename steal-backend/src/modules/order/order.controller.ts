@@ -90,4 +90,31 @@ export class OrderController {
       };
     }
   }
+
+  @CustomGet({
+    description: 'Get order by id',
+    isPublic: true,
+    path: '/owner/:ownerId',
+  })
+  async getOrdersByOwner(@Param('ownerId') ownerId: string) {
+    try {
+      if (!Number(ownerId)) {
+        throw new Error('Owner id must be a number');
+      }
+
+      const orders = await this.orderService.getOrdersByOwnerId(
+        Number(ownerId),
+      );
+
+      return {
+        data: orders,
+      };
+    } catch (err) {
+      this.logger.error(err);
+
+      return {
+        message: err.message,
+      };
+    }
+  }
 }

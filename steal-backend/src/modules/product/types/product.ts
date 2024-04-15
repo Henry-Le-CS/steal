@@ -37,3 +37,17 @@ export type SearchProductQuery = {
   page?: string;
   size?: string;
 };
+
+export type NormalizedProduct = {
+  id: number;
+  name: string;
+  price: number;
+  amount: number;
+  description: string;
+  additional_info: string;
+  created_at: string;
+  updated_at?: any;
+  owner_id: number;
+  images: string[];
+  categories: string[];
+};

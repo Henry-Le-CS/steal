@@ -1,5 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { SearchProductQuery, UploadProductDto } from '../types';
+import {
+  NormalizedProduct,
+  SearchProductQuery,
+  UploadProductDto,
+} from '../types';
 import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
 import { PrismaClient } from '@prisma/client';
 import { getCategoriesFromString, splitString } from '../helpers';
@@ -265,7 +269,7 @@ export class ProductService {
     return products.map((product) => this.normalizeProduct(product));
   }
 
-  private normalizeProduct(product: any) {
+  private normalizeProduct(product: any): NormalizedProduct {
     const { product_images, product_categories, ...rest } = product;
     return {
       ...rest,
@@ -296,5 +300,28 @@ export class ProductService {
     });
 
     return products.map((p) => this.normalizeProduct(p));
+  }
+
+  async getProductsOfSellerById(sellerId: number) {
+    const products = await this.dbService.products.findMany({
+      where: {
+        owner_id: sellerId,
+      },
+      include: {
+        product_categories: {
+          select: {
+            category: true,
+          },
+        },
+        product_images: {
+          select: {
+            image_url: true,
+          },
+        },
+      },
+    });
+
+    const res = products.map((p) => this.normalizeProduct(p));
+    return res;
   }
 }
