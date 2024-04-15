@@ -15,7 +15,7 @@ import { PRODUCT_SERVICES } from './product.provider';
 import { ProductService } from './services/product.service';
 import { Request as Req, Response as Res } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
-import { UploadProductDto } from './types';
+import { SearchProductQuery, UploadProductDto } from './types';
 
 @ApiTags('Product')
 @Controller('product')
@@ -56,9 +56,12 @@ export class ProductController {
     description: 'Get all products',
     path: '',
   })
-  async handleGetAllProducts(@Response() res: Res, @Query() query: any) {
+  async handleGetAllProducts(
+    @Response() res: Res,
+    @Query() query: SearchProductQuery,
+  ) {
     try {
-      const products = await this.productService.getAllProducts();
+      const products = await this.productService.getAllProducts(query);
 
       res.status(200).send({
         data: products,

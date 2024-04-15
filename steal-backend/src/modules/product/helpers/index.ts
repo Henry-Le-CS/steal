@@ -4,3 +4,7 @@ export const getCategoriesFromString = (categories: string) => {
     .split(',')
     .map((category) => category.trim());
 };
+
+export const splitString = (str: string, seperator = ',') => {
+  return str.split(seperator).map((item) => item.trim());
+};

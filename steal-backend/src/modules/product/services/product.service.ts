@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { UploadProductDto } from '../types';
+import { SearchProductQuery, UploadProductDto } from '../types';
 import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
 import { PrismaClient } from '@prisma/client';
-import { getCategoriesFromString } from '../helpers';
+import { getCategoriesFromString, splitString } from '../helpers';
 import { v4 as uuidv4 } from 'uuid';
 import { SupabaseHelper } from 'src/common/helpers';
 @Injectable()
@@ -70,12 +70,18 @@ export class ProductService {
     return productId;
   }
 
-  async getAllProducts() {
+  async getAllProducts(query: SearchProductQuery) {
     const products = await this.dbService.products.findMany({
+      where: {
+        ...this.getProductFilterCondition(query),
+      },
       include: {
         product_categories: {
           select: {
             category: true,
+          },
+          where: {
+            ...this.getProductCategoriesCondition(query.categories),
           },
         },
         product_images: {
@@ -84,8 +90,70 @@ export class ProductService {
           },
         },
       },
+      orderBy: {
+        ...(this.getProductOrderCondition(query) as {
+          price: 'asc' | 'desc' | 'desc' | 'asc' | undefined;
+          created_at: 'asc' | 'desc' | 'desc' | 'asc' | undefined;
+        }),
+      },
     });
 
     return products;
+  }
+
+  private getProductFilterCondition(query: SearchProductQuery) {
+    const { q, range } = query;
+    const filter: any = {};
+
+    if (q) {
+      filter.name = {
+        contains: q,
+      };
+    }
+
+    if (range) {
+      const [min, max] = splitString(range);
+      filter.price = {
+        gte: Number(min),
+        lte: Number(max),
+      };
+    }
+
+    return filter;
+  }
+
+  private getProductOrderCondition(query: SearchProductQuery) {
+    const { order } = query;
+
+    switch (order) {
+      case 'asc':
+        return {
+          price: 'asc',
+        };
+      case 'desc':
+        return {
+          price: 'desc',
+        };
+      case 'newest':
+        return {
+          created_at: 'desc',
+        };
+      case 'oldest':
+        return {
+          created_at: 'asc',
+        };
+      default:
+        return {};
+    }
+  }
+
+  private getProductCategoriesCondition(categories: string) {
+    if (!categories) return {};
+
+    return {
+      category: {
+        in: splitString(categories),
+      },
+    };
   }
 }

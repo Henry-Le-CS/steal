@@ -26,3 +26,12 @@ export class UploadProductDto {
   @IsNotEmptyObject()
   file: MemoryStoredFile;
 }
+
+type Order = 'asc' | 'desc' | 'newest' | 'oldest' | 'none';
+
+export type SearchProductQuery = {
+  q?: string;
+  range?: string; // a,b
+  categories?: string; // a,b
+  order?: Order;
+};
