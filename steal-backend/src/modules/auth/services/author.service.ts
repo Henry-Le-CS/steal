@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   AuthorizeUserPayload,
   GoogleAuthorizedUserData,
@@ -7,10 +7,16 @@ import {
 } from '../interfaces';
 import { PlatformType } from '../constants';
 import * as jwt from 'jsonwebtoken';
+import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class AuthorService implements IAuthorService {
   private readonly logger = new Logger(AuthorService.name);
+
+  constructor(
+    @Inject(DATABASE_SERVICES) private readonly databaseService: PrismaClient,
+  ) {}
 
   authorizeUser(payload: AuthorizeUserPayload) {
     const { type } = payload;
@@ -34,12 +40,34 @@ export class AuthorService implements IAuthorService {
       case PlatformType.GOOGLE:
         ret = await this.getGoogleUserInfo(data, id);
         break;
+      case PlatformType.CREDENTIALS:
+        ret = await this.getCredentialsUserInfo(data);
+        break;
       default:
         this.logger.error(`[GET-USER-INFO]: unsupported platform by ${type}`);
         throw new Error('Unsupported platform');
     }
 
     return ret;
+  }
+
+  async getCredentialsUserInfo(email: string) {
+    const user = await this.databaseService.users.findMany({
+      where: {
+        email,
+      },
+    });
+
+    if (!user || !user[0]?.id) {
+      throw new Error(`Username ${email} not found`);
+    }
+
+    const firstUser = user[0];
+    const { password, salt, ...rest } = firstUser;
+
+    return {
+      ...rest,
+    };
   }
 
   /**

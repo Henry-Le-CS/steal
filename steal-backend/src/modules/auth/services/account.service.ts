@@ -60,6 +60,7 @@ export class AccountService {
     return {
       username: user[0].username,
       email: user[0].email,
+      id: user[0].id,
     };
   }
 }

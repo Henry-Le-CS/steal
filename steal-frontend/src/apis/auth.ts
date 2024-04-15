@@ -9,6 +9,7 @@ export type LoginDto = {
 export type LoginResponse = {
     username: string;
     email: string;
+    id: string;
 }
 
 export const signIn = async (payload: LoginDto): Promise<ResponseData<LoginResponse>> => {

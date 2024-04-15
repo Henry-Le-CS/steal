@@ -9,7 +9,8 @@ export interface IAuthorService {
 
 export type AuthorizeUserPayload = GoogleAuthorizeUserPayload | any;
 
-export type UserInfoPayload = GoogleUserInfoPayload & {
+export type UserInfoType = GoogleUserInfoPayload | CredentialUserInfoPayload;
+export type UserInfoPayload = UserInfoType & {
   id: string; // session id
 };
 
@@ -30,6 +31,11 @@ export type GoogleAuthorizeUserPayload = {
 export type GoogleUserInfoPayload = {
   type: PlatformType.GOOGLE;
   data: GoogleAuthorizedUserData;
+};
+
+export type CredentialUserInfoPayload = {
+  type: PlatformType.CREDENTIALS;
+  data: string;
 };
 
 declare module 'express-session' {
