@@ -9,7 +9,7 @@ import * as Separator from '@radix-ui/react-separator';
 import { PriceUnit } from "@/common/constants/products";
 import { formartNumber } from "@/common/helper";
 
-export type OrderedItemType = {
+export type ListItemType = {
     id: string;
     imageUrl: string;
     title: string;
@@ -19,11 +19,11 @@ export type OrderedItemType = {
     status: string;
 }
 
-interface OrderedItemProps {
-    item: OrderedItemType
+interface ListItemProps {
+    item: ListItemType
 }
 
-export const OrderedItem = memo(function OrderedItemComponent(props: OrderedItemProps) {
+export const ListItem = memo(function ListItemComponent(props: ListItemProps) {
     const { item } = props;
     const { imageUrl, title, price, count, description, status } = item;
 
@@ -35,7 +35,7 @@ export const OrderedItem = memo(function OrderedItemComponent(props: OrderedItem
             <div className="w-full flex items-center justify-end border-b text-sm">
                 <span className="flex items-center justify-center gap-2 text-[#009D65]">
                     <Image className="w-[32px]" src={truckSVG} alt="Truck icon" />
-                    {'Delivered successfully'}
+                    {description}
                     <CiCircleQuestion className="text-[#ababab]" size={24} />
                 </span>
 
@@ -81,7 +81,7 @@ export const OrderedItem = memo(function OrderedItemComponent(props: OrderedItem
                 </span>
 
                 <span className="text-[#FF7125]">
-                    {formartNumber(price * count)}
+                    {formartNumber(price)}
                 </span>
 
                 <span className="">

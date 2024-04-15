@@ -262,7 +262,7 @@ export class ProductService {
       take: take,
     });
 
-    return products;
+    return products.map((product) => this.normalizeProduct(product));
   }
 
   private normalizeProduct(product: any) {

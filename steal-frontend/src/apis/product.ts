@@ -37,3 +37,9 @@ export const getProductByIds = async (ids: number[]): Promise<ResponseData<Produ
 
     return data
 }
+
+export const getProductsOfSellerById = async (id: string): Promise<ResponseData<ProductType[]>> => {
+    const {data} = await axiosInstance.get(`/product/owner/${id}`)
+
+    return data
+}
