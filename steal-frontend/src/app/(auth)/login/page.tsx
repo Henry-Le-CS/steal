@@ -8,14 +8,12 @@ import { CiLock } from "react-icons/ci";
 import { Button } from "primereact/button";
 
 const LoginPage = () => {
-    const bgColor = `bg-[${LOGIN_MAIN_COLOR}]`
-
     return (
         <AuthLayout shadowColor={LOGIN_MAIN_COLOR}>
             <div className={
                 clsx([
                     "h-full flex items-center justify-center w-full",
-                    bgColor
+                    `bg-[#036147]`
                 ])
             }>
                 <Form.Root onSubmit={() => {
@@ -30,7 +28,7 @@ const LoginPage = () => {
                                     className={
                                         clsx([
                                             "p-2 bg-inherit w-full text-white shadow-none outline-none placeholder:text-white",
-                                            bgColor
+                                            `bg-[#036147]`
                                         ])
                                     }
                                     required

@@ -8,7 +8,7 @@ import { CiLock } from "react-icons/ci";
 import { Button } from "primereact/button";
 
 const SignUpPage = () => {
-    const bgColor = `bg-[${SIGNUP_MAIN_COLOR}]`
+    const bgColor = `bg-[#D06227]`
 
     return (
         <AuthLayout shadowColor={SIGNUP_MAIN_COLOR}>
@@ -98,36 +98,6 @@ const SignUpPage = () => {
                             </Form.Message>
                         </div>
                     </Form.Field>
-
-                    {/* <Form.Field className="w-full" name="confirm-password">
-                        <div className="relative flex p-2 text-white items-center justify-start gap-1 border border-[white] rounded-sm">
-                            <CiLock size={32} />
-                            <Form.Control asChild>
-                                <input
-                                    placeholder="CONFIRM PASSWORD"
-                                    className="p-2 bg-inherit w-full text-white shadow-none outline-none placeholder:text-white"
-                                    type="password"
-                                    required
-                                />
-                            </Form.Control>
-
-                            <Form.Message className="absolute -top-[24px] right-0 text-sm text-white opacity-[0.8]" match="valueMissing">
-                                Please confirm your password
-                            </Form.Message>
-
-                            <Form.Message
-                                className="absolute -top-[24px] right-0 text-sm text-white opacity-[0.8]"
-                                match={
-                                    (value, values: any) => {
-                                        console.log(value, values)
-                                        return true;
-                                    }
-                                }
-                            >
-                                Confirmed password does not match
-                            </Form.Message>
-                        </div>
-                    </Form.Field> */}
 
                     <Form.Submit asChild>
                         <Button className="w-full text-[#D06227] border shadow-lg bg-white px-2 py-2" label="REGISTER" />
