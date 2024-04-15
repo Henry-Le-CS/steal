@@ -43,3 +43,15 @@ export const getProductsOfSellerById = async (id: string): Promise<ResponseData<
 
     return data
 }
+
+export const postProduct = async (data: FormData): Promise<ResponseData<{
+    productId: number
+}>> => {
+    const {data: res} = await axiosInstance.post('/product', data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+    return res
+}
