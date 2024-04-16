@@ -140,10 +140,7 @@ export class ProductController {
     @Response() res: Res,
   ) {
     try {
-      const product = await this.productService.getProductById(
-        productId,
-        query,
-      );
+      const product = await this.productService.getProductById(productId);
 
       res.status(200).send({
         data: product,

@@ -142,7 +142,7 @@ export class ProductService {
     };
   }
 
-  async getProductById(productId: string, query: SearchProductQuery) {
+  async getProductById(productId: string, shouldCheckAmount = true) {
     if (!productId || !isNumber(Number(productId)))
       throw new Error('Product ID is required');
 
@@ -150,7 +150,7 @@ export class ProductService {
       where: {
         id: Number(productId),
         amount: {
-          not: 0,
+          not: shouldCheckAmount ? 0 : undefined,
         },
       },
       include: {
@@ -269,7 +269,7 @@ export class ProductService {
     return products.map((product) => this.normalizeProduct(product));
   }
 
-  private normalizeProduct(product: any): NormalizedProduct {
+  normalizeProduct(product: any): NormalizedProduct {
     const { product_images, product_categories, ...rest } = product;
     return {
       ...rest,
