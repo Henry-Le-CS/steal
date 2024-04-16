@@ -18,6 +18,7 @@ export type SendEmailPayload = EmailGeneratorPayload & {
   to: string;
   subject: string;
   from?: string;
+  templateId?: string;
 };
 
 export type EmailGeneratorPayload = {
