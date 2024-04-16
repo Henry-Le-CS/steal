@@ -6,7 +6,9 @@ import { ClientFooter } from "@/components/footer/client-footer";
 import { ClientLogo } from "@/components/logo";
 import { ClientNavbar } from "@/components/navbar";
 import { ProductProvider } from "@/store/contexts";
-import { FC } from "react";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
+import { FC, useEffect } from "react";
 
 interface MainLayoutProps {
     children: React.ReactNode;

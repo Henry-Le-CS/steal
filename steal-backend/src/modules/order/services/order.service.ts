@@ -2,7 +2,12 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
 import { PaymentType } from '../constants';
-import { OrderPayloadDto } from '../types';
+import { ConfirmOrderPayload, OrderPayloadDto, OrderType } from '../types';
+import { PRODUCT_SERVICES } from 'src/modules/product/product.provider';
+import { ProductService } from 'src/modules/product/services/product.service';
+import { EMAIL_SERVICES } from 'src/modules/email/email.provider';
+import { EmailService } from 'src/modules/email/services/email.service';
+import { formartNumber, formatDate } from 'src/common/helpers';
 
 @Injectable()
 export class OrderService {
@@ -10,6 +15,8 @@ export class OrderService {
 
   constructor(
     @Inject(DATABASE_SERVICES) private readonly dbService: PrismaClient,
+    @Inject(PRODUCT_SERVICES) private readonly productService: ProductService,
+    @Inject(EMAIL_SERVICES) private readonly emailService: EmailService,
   ) {}
 
   async makeOrder(payload: OrderPayloadDto) {
@@ -34,7 +41,7 @@ export class OrderService {
 
     try {
       // Begin transaction
-      const order = await this.dbService.$transaction(async (tx) => {
+      const transaction = await this.dbService.$transaction(async (tx) => {
         tx.$executeRaw`LOCK TABLE products WRITE`;
         // Retrieve current product quantity
         const product = await tx.products.findUnique({
@@ -59,7 +66,25 @@ export class OrderService {
         tx.$executeRaw`UNLOCK TABLE products`;
 
         // Commit transaction
-        return order;
+        return [order, product];
+      });
+
+      const order = transaction[0] as OrderType;
+      const product = transaction[1];
+
+      const productDetails = await this.productService.getProductById(
+        `${product.id}`,
+        false,
+      );
+
+      const { images, price, name } = productDetails;
+
+      // Send order confirmation email
+      await this.sendOrderConfirmationEmail({
+        ...(order as OrderType),
+        imageUrl: images[0],
+        price: `${price}`,
+        productName: name,
       });
 
       return order;
@@ -105,10 +130,84 @@ export class OrderService {
   }
 
   async getOrdersByUserId(userId: number) {
-    const orders = this.dbService.orders.findMany({
+    const orders = await this.dbService.orders.findMany({
       where: { user_id: userId },
     });
 
-    return orders;
+    const ids = orders.map((order) => order.product_id);
+
+    const products = await this.productService.getAllProductsByIds(ids);
+
+    const joinedOrders = orders.map((order) => {
+      const product = products.find(
+        (product) => product.id === order.product_id,
+      );
+
+      return { ...order, product };
+    });
+
+    return joinedOrders;
+  }
+
+  async getOrdersByOwnerId(ownerId: number) {
+    const products = await this.productService.getProductsOfSellerById(ownerId);
+    const ids = products.map((product) => product.id);
+
+    const orders = await this.dbService.orders.findMany({
+      where: { product_id: { in: ids } },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    const ret = orders.map((order) => {
+      const product = products.find(
+        (product) => product.id === order.product_id,
+      );
+
+      return { ...order, product };
+    });
+
+    return ret;
+  }
+
+  async sendOrderConfirmationEmail(order: ConfirmOrderPayload) {
+    if (!order) {
+      throw new Error(`Order not found`);
+    }
+
+    const {
+      id,
+      email,
+      imageUrl,
+      price,
+      created_at,
+      address,
+      city,
+      productName,
+      amount,
+      total_price: total,
+    } = order;
+
+    const payload = {
+      templateId: 'order-success',
+      args: {
+        imageUrl,
+        price: formartNumber(Number(price)),
+        email,
+        id,
+        date: formatDate(created_at),
+        address: [address, city].join(', '),
+        title: productName,
+        total: formartNumber(Number(total)),
+        quantity: amount,
+      },
+    };
+
+    await this.emailService.sendEmail({
+      to: email,
+      subject: `[STEAL] - INVOICE FOR PURCHASE #${id}`,
+      ...payload,
+    });
   }
 }

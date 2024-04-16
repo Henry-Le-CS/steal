@@ -1,6 +1,6 @@
 import { formartNumber } from "@/common/helper"
 import { ProductBriefType } from "@/store/types"
-import { Image } from 'primereact/image';
+import Image from "next/image"
 import Link from "next/link"
 import { Card } from "primereact/card"
 import { FC } from "react"
@@ -8,22 +8,20 @@ import { FC } from "react"
 export const ProductCard: FC<ProductBriefType & {
     unit: string
 }> = (props) => {
-    const { id, title, price, count, postedAt, unit } = props
+    const { id, title, price, count, postedAt, unit, imageUrl } = props
 
     const formatDate = (date: string) => {
         const d = new Date(date)
         return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
     }
 
-    return <div key={id} className="card flex justify-content-center">
+    return <div key={id} className="card w-full h-max flex items-start justify-center">
         <Link href={`/product/${id}`}>
             <Card
-                title={<span className="text-base">{title}</span>}
-                header={
-                    <Image width='100%' alt="Card" src="https://primefaces.org/cdn/primereact/images/usercard.png" />
-                }
-                className="w-full p-2"
+                className="w-[315px] h-[510px] p-2 h-100%"
+                header={<Image className="h-[250px]" loader={() => imageUrl} width={300} height={100} src={imageUrl} alt="Image source" />}
             >
+                <span className="text-lg font-bold">{title}</span>
                 <div className="flex items-center justify-start gap-2 text-sm">
                     <span>Price:</span>
                     <span className="text-[#FF7125] font-bold">{formartNumber(price)}</span>

@@ -48,3 +48,15 @@ export const updateMultipleCart = (items: Record<string, number>) => {
     window.dispatchEvent(new Event('storage'))
     localStorage.setItem("cart", JSON.stringify(cart));
 }
+
+export const removeItemWithIdFromCart = (id: string) => {
+    const storedData = localStorage.getItem("cart") || "{}";
+    const cart = JSON.parse(storedData) as Record<string, number>;
+
+    if(cart[id]) {
+        delete cart[id];
+    }
+
+    window.dispatchEvent(new Event('storage'))
+    localStorage.setItem("cart", JSON.stringify(cart));
+}

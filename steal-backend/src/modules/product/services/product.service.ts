@@ -1,5 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { SearchProductQuery, UploadProductDto } from '../types';
+import {
+  NormalizedProduct,
+  SearchProductQuery,
+  UploadProductDto,
+} from '../types';
 import { DATABASE_SERVICES } from 'src/modules/database/database.provider';
 import { PrismaClient } from '@prisma/client';
 import { getCategoriesFromString, splitString } from '../helpers';
@@ -80,6 +84,9 @@ export class ProductService {
     const products = await this.dbService.products.findMany({
       where: {
         ...this.getProductFilterCondition(query),
+        amount: {
+          not: 0,
+        },
       },
       include: {
         product_categories: {
@@ -103,10 +110,21 @@ export class ProductService {
       take: take,
     });
 
+    const hasMore = await this.dbService.products.count({
+      where: {
+        ...this.getProductFilterCondition(query),
+        amount: {
+          not: 0,
+        },
+      },
+    });
+
     const filteredProducts = products.filter((product) => {
       const categories = product.product_categories.map(
         (category) => category.category,
       );
+
+      if (!query.categories) return true;
 
       const queriedCategories = splitString(query.categories || '');
       return queriedCategories.every((category) =>
@@ -118,16 +136,22 @@ export class ProductService {
       return this.normalizeProduct(product);
     });
 
-    return normalizedProducts;
+    return {
+      products: normalizedProducts,
+      total: hasMore,
+    };
   }
 
-  async getProductById(productId: string, query: SearchProductQuery) {
+  async getProductById(productId: string, shouldCheckAmount = true) {
     if (!productId || !isNumber(Number(productId)))
       throw new Error('Product ID is required');
 
     const product = await this.dbService.products.findUnique({
       where: {
         id: Number(productId),
+        amount: {
+          not: shouldCheckAmount ? 0 : undefined,
+        },
       },
       include: {
         product_categories: {
@@ -142,15 +166,10 @@ export class ProductService {
         },
       },
     });
+
     if (!product) throw new Error('Product not found');
 
-    const filteredCategories = product.product_categories.filter((category) => {
-      const categories = splitString(query.categories || '');
-
-      return categories.includes(category.category);
-    });
-
-    return this.normalizeProduct(filteredCategories);
+    return this.normalizeProduct(product);
   }
 
   private getProductFilterCondition(query: SearchProductQuery) {
@@ -247,16 +266,62 @@ export class ProductService {
       take: take,
     });
 
-    return products;
+    return products.map((product) => this.normalizeProduct(product));
   }
 
-  private normalizeProduct(product: any) {
+  normalizeProduct(product: any): NormalizedProduct {
     const { product_images, product_categories, ...rest } = product;
-
     return {
       ...rest,
       images: product_images.map((img) => img.image_url),
       categories: product_categories.map((category) => category.category),
     };
+  }
+
+  async getAllProductsByIds(productIds: number[]) {
+    const products = await this.dbService.products.findMany({
+      where: {
+        id: {
+          in: productIds,
+        },
+      },
+      include: {
+        product_categories: {
+          select: {
+            category: true,
+          },
+        },
+        product_images: {
+          select: {
+            image_url: true,
+          },
+        },
+      },
+    });
+
+    return products.map((p) => this.normalizeProduct(p));
+  }
+
+  async getProductsOfSellerById(sellerId: number) {
+    const products = await this.dbService.products.findMany({
+      where: {
+        owner_id: sellerId,
+      },
+      include: {
+        product_categories: {
+          select: {
+            category: true,
+          },
+        },
+        product_images: {
+          select: {
+            image_url: true,
+          },
+        },
+      },
+    });
+
+    const res = products.map((p) => this.normalizeProduct(p));
+    return res;
   }
 }

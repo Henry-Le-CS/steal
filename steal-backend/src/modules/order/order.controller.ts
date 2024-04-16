@@ -23,7 +23,6 @@ export class OrderController {
   })
   async handleCheckout(@Body() payload: OrderDto) {
     try {
-      console.log(payload);
       const { productId, quantity } = payload;
 
       const res = await this.priceService.getTotalPriceForProduct(
@@ -79,6 +78,33 @@ export class OrderController {
       }
 
       const orders = await this.orderService.getOrdersByUserId(Number(userId));
+
+      return {
+        data: orders,
+      };
+    } catch (err) {
+      this.logger.error(err);
+
+      return {
+        message: err.message,
+      };
+    }
+  }
+
+  @CustomGet({
+    description: 'Get order by id',
+    isPublic: true,
+    path: '/owner/:ownerId',
+  })
+  async getOrdersByOwner(@Param('ownerId') ownerId: string) {
+    try {
+      if (!Number(ownerId)) {
+        throw new Error('Owner id must be a number');
+      }
+
+      const orders = await this.orderService.getOrdersByOwnerId(
+        Number(ownerId),
+      );
 
       return {
         data: orders,

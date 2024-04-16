@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { KeyValue } from 'src/common/types';
-import * as MOCK_DATA from '../mock-data/template.json';
 import { EmailGeneratorPayload, SendEmailPayload } from '../types';
+import * as fs from 'fs';
+import { InjectQueue } from '@nestjs/bull';
+import { EMAIL_TASK_QUEUE, SEND_EMAIL } from '../constants';
+import { Queue } from 'bull';
 
 @Injectable()
 export class EmailService {
+  constructor(
+    @InjectQueue(EMAIL_TASK_QUEUE) private readonly emailQueue: Queue,
+  ) {}
+
   async generateEmail(payload: EmailGeneratorPayload) {
     const { args, templateId } = payload;
 
@@ -15,14 +22,14 @@ export class EmailService {
   }
 
   private async getTemplate(templateId: string) {
-    // TODO: Get template from database
-    const template = MOCK_DATA['1'];
+    const templatePath = `${process.cwd()}/src/modules/email/mock-data/${templateId}.html`;
+    const template = fs.readFileSync(templatePath, 'utf8');
 
-    if (!template?.data) {
-      throw new Error(`Template ${templateId} not found`);
+    if (!template) {
+      throw new Error(`Template with ID ${templateId} not found`);
     }
 
-    return template?.data;
+    return template;
   }
 
   /**
@@ -44,5 +51,9 @@ export class EmailService {
     }
 
     return completeMail;
+  }
+
+  async sendEmail(payload: SendEmailPayload) {
+    await this.emailQueue.add(SEND_EMAIL, payload);
   }
 }

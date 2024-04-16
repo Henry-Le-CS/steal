@@ -1,11 +1,12 @@
 import { CartItem } from "@/store/types/cart";
-import { FC, memo } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { Image } from 'primereact/image'
 import { formartNumber } from "@/common/helper";
 import { PriceUnit } from "@/common/constants/products";
 import Link from "next/link";
 import clsx from "clsx";
 import { UpdateCart } from "./update-cart";
+import { calculatePriceForCartItems } from "@/apis";
 interface ProductListProps {
     items: CartItem[];
     selectedItemId: string;
@@ -15,11 +16,43 @@ interface ProductListProps {
 
 const ProductListInfoComponent: FC<ProductListProps> = (props) => {
     const { items, setCartItems, setSelectedItem } = props;
+    const [itemInfo, setItemInfo] = useState<Record<string, any>>({})
+
+    useEffect(() => {
+        async function calculatePrice() {
+            const { data: products } = await calculatePriceForCartItems({
+                type: 'multiple',
+                products: items.map(item => ({
+                    id: Number(item.id),
+                    amount: item.cartQuantity
+                }))
+            })
+
+            if (!products) return;
+
+            products.forEach((product) => {
+                setItemInfo((prev) => ({
+                    ...prev,
+                    [product.productId]: {
+                        total: product.totalPrice,
+                        quantity: product.quantity,
+                        price: product.price
+                    }
+                }))
+            })
+        }
+
+        calculatePrice();
+    }, [items])
 
     return <div className="w-full flex flex-col items-start justify-start gap-4 mt-4 max-h-[600px] overflow-y-auto no-scrollbar">
         {
             items.map((item, index) => {
                 const { id, title, imageUrl, price, cartQuantity } = item;
+                const detail = itemInfo[id];
+
+                if (!detail) return null;
+
                 return <div
                     key={id}
                     onClick={() => setSelectedItem(id)}
@@ -57,7 +90,7 @@ const ProductListInfoComponent: FC<ProductListProps> = (props) => {
                             />
                         </div>
                         <div className="text-center font-bold p-1">
-                            <span className="text-[#FF7125]">{formartNumber(price * cartQuantity)}</span> {PriceUnit.VND}
+                            <span className="text-[#FF7125]">{formartNumber(detail.total)}</span> {PriceUnit.VND}
                         </div>
                     </div>
                 </div>

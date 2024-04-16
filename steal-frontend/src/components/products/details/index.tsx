@@ -6,6 +6,8 @@ import { ProductDetail } from "./product-detail";
 import { useParams } from "next/navigation";
 import { PriceUnit } from "@/common/constants/products";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { getProductById } from "@/apis";
+import { formatDate } from "@/common/helper";
 
 export type ProductInfoProps = Omit<ProductBriefType & {
     status: string;
@@ -31,19 +33,22 @@ const ProductInfoComponent: FC = () => {
         const fetchData = async (id: string) => {
             try {
                 setIsLoading(true)
-                await new Promise(resolve => setTimeout(resolve, 200))
+                const { data } = await getProductById(parseInt(id))
 
+                if (!data) return;
+
+                const { images, created_at, categories, price, amount, name: title } = data
                 setProduct({
                     id,
-                    imageUrl: 'https://primefaces.org/cdn/primereact/images/usercard.png',
-                    title: 'Canon Kiss X5 (Canon EOS 600D) + Lens 28-80mm (80% New)',
-                    price: 336528,
-                    postedAt: '2021-12-12',
+                    imageUrl: images[0],
+                    title,
+                    price,
+                    postedAt: formatDate(created_at),
                     status: 'Available',
                     brand: 'Cannon',
-                    category: 'Electronics',
+                    category: categories.join(', '),
                     unit: PriceUnit.VND,
-                    remaining: 5,
+                    remaining: amount,
                 })
             }
             catch (err) {
@@ -64,7 +69,7 @@ const ProductInfoComponent: FC = () => {
     const { imageUrl, ...rest } = product;
 
     return <div className="w-full flex items-start mt-[80px] mb-[60px] px-[15%] justify-center gap-4">
-        <Image className="w-[30%] border rounded-lg" width='auto' height="auto" alt="Card" src="https://primefaces.org/cdn/primereact/images/usercard.png" />
+        <Image className="flex items-center justify-center w-[30%] border rounded-lg" width='auto' height="auto" alt="Card" src={imageUrl} />
         <ProductDetail
             {...rest}
         />

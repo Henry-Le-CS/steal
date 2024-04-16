@@ -8,8 +8,7 @@ export const ClientFooterAddress = () => {
         <div className="w-[30%] flex flex-col items-start justify-center gap-4  text-white">
             <ClientFooterLogo className="h-[80px]" />
             <span className="text-justify">
-                Chào mừng bạn đến với Steal - Nơi mua bán đồ secondhand uy tín và tiện lợi nhất!
-                Steal là website chuyên cung cấp đa dạng các mặt hàng secondhand từ thời trang, phụ kiện, đồ gia dụng đến đồ điện tử, xe cộ... với giá cả hợp lý.
+                Welcome to Steal - The most reputable and convenient place to buy and sell secondhand items! Steal is a website specialized in providing a variety of secondhand items including fashion, accessories, household goods, electronics, vehicles... at reasonable prices.
             </span>
             <div className="flex items-center justify-center gap-4">
                 <CiLocationOn size={24} />

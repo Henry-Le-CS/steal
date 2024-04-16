@@ -1,7 +1,9 @@
+'use client'
 import { Search } from "@/components/ui/search";
 import { FC, memo } from "react";
 import { Dropdown } from 'primereact/dropdown';
 import { OrderByPriceType } from "@/store/types";
+import { useProductContext } from "@/store/contexts";
 
 interface CustomerSearchProps extends React.HTMLAttributes<HTMLDivElement> {
     search?: string;
@@ -34,6 +36,12 @@ const CustomerSearchComponent: FC<CustomerSearchProps> = (props) => {
         }
     ];
 
+    const { productState } = useProductContext();
+    const { currentPage, currentPageCount, pageSize } = productState
+
+    const countFrom = (currentPage * pageSize) + 1
+    const countTo = countFrom + currentPageCount - 1
+
     return <div className="w-full flex items-start justify-between">
         <div className="flex w-[40%] flex-col gap-2">
             <Search
@@ -42,7 +50,7 @@ const CustomerSearchComponent: FC<CustomerSearchProps> = (props) => {
                 wrapperClassName="w-full"
                 onChange={props.onSearch}
             />
-            <span className="text-sm text-[#707070]">Show <span className="font-semibold">1-9</span> out of <span className="font-semibold">24</span> results</span>
+            <span className="text-sm text-[#707070]">Show <span className="font-semibold">{countFrom}-{countTo}</span> out of <span className="font-semibold">{productState.total}</span> results</span>
         </div>
 
         <Dropdown

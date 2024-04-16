@@ -1,6 +1,8 @@
 "use client";
 import { RouteType } from "@/common/types";
+import { ProfilePopover } from "@/components/profile";
 import clsx from "clsx";
+import { useCookies } from "next-client-cookies";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FC, HTMLAttributes, ReactNode, memo, useMemo } from "react";
@@ -15,6 +17,13 @@ const ClientNavbarComponent: FC<IClientNavbarProps> = (props) => {
     const path = usePathname();
 
     const isActive = (routePath: string) => routePath === path;
+
+    const cookie = useCookies()
+    const router = useRouter();
+
+    const username = cookie.get('username');
+
+    if (!username) router.push('/login')
 
     return (
         <div style={{
@@ -36,6 +45,7 @@ const ClientNavbarComponent: FC<IClientNavbarProps> = (props) => {
                         <span>{route.title}</span>
                     </Link>
                 ))}
+                <ProfilePopover />
             </div>
         </div>
     );

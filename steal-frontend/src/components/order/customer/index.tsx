@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { OrderedItem, OrderedItemType } from "./ordered-item";
 import { Spinner } from "@/components/ui/spinner";
 import { MOCK_ORDERED_ITEMS } from "@/common/data/order";
+import { OrderType, getOrdersOfUser } from "@/apis";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
 const TABS = [
     {
         title: "All",
@@ -36,13 +39,41 @@ export const CustomerOrder = function CustomerOrderComponent() {
     const [isLoading, setIsLoading] = useState(false)
     const [orderedItems, setOrderedItems] = useState<OrderedItemType[]>([])
 
+    const cookie = useCookies();
+    const router = useRouter();
+
+    function extractOrderedItems(data: OrderType[]): OrderedItemType[] {
+        return data.map((order) => ({
+            id: `${order.id}`,
+            imageUrl: order.product.images[0],
+            title: order.product.name,
+            price: order.total_price,
+            count: order.amount,
+            description: order.note,
+            status: order.status
+        }))
+    }
+
     useEffect(() => {
         async function fetchOrderedItems() {
             try {
                 setIsLoading(true)
-                await new Promise((resolve) => setTimeout(resolve, 200))
+                const userId = cookie.get('id');
 
-                setOrderedItems(MOCK_ORDERED_ITEMS)
+                if (!userId) {
+                    router.push('/login')
+                    return;
+                }
+
+                const { data, message } = await getOrdersOfUser(userId);
+
+                if (!data || message) {
+                    throw new Error(message || 'Cannot get orders')
+                };
+
+                const orderedItems = extractOrderedItems(data);
+
+                setOrderedItems(orderedItems)
             }
             catch (err) {
                 console.error(err)
@@ -78,6 +109,9 @@ export const CustomerOrder = function CustomerOrderComponent() {
                             orderedItems.map((item, index) => (
                                 <OrderedItem key={index} item={item} />
                             ))
+                        }
+                        {
+                            orderedItems.length === 0 && <span className="w-full text-center text-[black]">No order is conducted yet</span>
                         }
                     </div>
             }

@@ -3,10 +3,13 @@ import { Card } from 'primereact/card';
 import { useProductContext } from "@/store/contexts";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { MOCK_PRODUCTS } from "@/common/data";
-import { formartNumber } from "@/common/helper";
+import { extractBriefDataInfo, formartNumber } from "@/common/helper";
 import Link from "next/link";
 import { Paginator } from 'primereact/paginator';
 import { ProductCard } from "./product-card";
+import { ProductType, getAllProducts } from "@/apis";
+import { ProductBriefType } from "@/store/types";
+import { ProductActionEnum } from "@/store/reducers";
 
 const ProductListComponent: FC = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -16,18 +19,29 @@ const ProductListComponent: FC = () => {
     const { productState, productDispatch } = useProductContext()
     const { products, search, order, currentPage, unit, total, categories, range } = productState
 
+
+
     useEffect(() => {
         // Fetch data from server
         async function fetchData() {
             try {
                 setIsLoading(true)
-                await new Promise((resolve) => setTimeout(resolve, 500))
+
+                const { data } = await getAllProducts({
+                    page: `${currentPage}`,
+                    q: search.trim(),
+                    order: order,
+                });
+
+                const products = extractBriefDataInfo(data?.products || []);
+
                 productDispatch(
                     {
-                        type: 'SET_PRODUCTS',
+                        type: ProductActionEnum.SET_ALL,
                         payload: {
-                            products: MOCK_PRODUCTS,
-                            total: MOCK_PRODUCTS.length * 2
+                            products: products,
+                            total: data?.total || 0,
+                            currentPageCount: data?.products?.length || 0
                         }
                     }
                 )
@@ -61,10 +75,10 @@ const ProductListComponent: FC = () => {
         productDispatch({ type: 'SET_PAGE', payload: event.page });
     };
 
-    if (isLoading || !products?.length) return <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="#036147" animationDuration=".5s" />
+    if (isLoading) return <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="#036147" animationDuration=".5s" />
 
-    return <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-3 gap-4">
+    return <div className="w-full flex flex-col gap-4">
+        <div className="w-full grid grid-cols-3 gap-4 justify-between">
             {
                 products.map((product) => {
                     const { id } = product

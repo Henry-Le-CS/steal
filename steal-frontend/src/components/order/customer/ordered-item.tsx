@@ -35,7 +35,7 @@ export const OrderedItem = memo(function OrderedItemComponent(props: OrderedItem
             <div className="w-full flex items-center justify-end border-b text-sm">
                 <span className="flex items-center justify-center gap-2 text-[#009D65]">
                     <Image className="w-[32px]" src={truckSVG} alt="Truck icon" />
-                    {description}
+                    {'Delivered successfully'}
                     <CiCircleQuestion className="text-[#ababab]" size={24} />
                 </span>
 
@@ -81,7 +81,7 @@ export const OrderedItem = memo(function OrderedItemComponent(props: OrderedItem
                 </span>
 
                 <span className="text-[#FF7125]">
-                    {formartNumber(price)}
+                    {formartNumber(price * count)}
                 </span>
 
                 <span className="">

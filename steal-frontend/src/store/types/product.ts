@@ -9,7 +9,7 @@ export type ProductBriefType = {
     postedAt: string;
 };
 
-export type OrderByPriceType = 'none' | 'asc' | 'desc' | 'newest' | 'oldest' | '';
+export type OrderByPriceType = 'asc' | 'desc' | 'newest' | 'oldest' | '';
 
 export type ProductStateType = {
     products: ProductBriefType[];
@@ -21,6 +21,7 @@ export type ProductStateType = {
     unit: PriceUnit;
     order: OrderByPriceType;
     total: number;
+    currentPageCount: number;
 }
 
 export type ProductActionType = {

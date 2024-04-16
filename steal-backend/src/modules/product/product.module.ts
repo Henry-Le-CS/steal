@@ -27,7 +27,6 @@ export class ProductModule {
           storage: diskStorage({
             destination: './tmp',
             filename: (req, file, cb) => {
-              console.log('file', file);
               const ext = file.mimetype.split('/')[1];
               cb(null, `${uuidv4()}-${Date.now()}.${ext}`);
             },

@@ -1,5 +1,6 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import {
+  AccountServiceProvider,
   AuthenProvider,
   AuthorProvider,
   GoogleStrategyProvider,
@@ -16,6 +17,7 @@ export class AuthModule {
     providers.push(GoogleStrategyProvider);
     providers.push(AuthenProvider);
     providers.push(AuthorProvider);
+    providers.push(AccountServiceProvider);
 
     return {
       module: AuthModule,
