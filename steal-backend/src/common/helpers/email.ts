@@ -65,7 +65,7 @@ export class EmailHelper {
     this.validateSendEmailPayload(to, subject, html, from);
 
     const mailOptions = {
-      from: 'lehieu2079@gmail.com',
+      from: 'lehieu2077@gmail.com',
       to,
       subject,
       html,
